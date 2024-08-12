@@ -2,6 +2,7 @@ package com.example.englishnotebook.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -27,7 +28,9 @@ import com.example.englishnotebook.ui.theme.LightOrange
 import com.example.englishnotebook.ui.theme.LightPurple
 import com.example.englishnotebook.ui.theme.LightYellow
 import com.example.englishnotebook.ui.theme.PastelPink
+import com.example.englishnotebook.ui.theme.Pink
 import com.example.englishnotebook.ui.theme.SoftBlue
+import com.example.englishnotebook.ui.theme.SoftGreen
 import com.example.englishnotebook.ui.theme.SoftPink
 
 @Composable
@@ -40,18 +43,23 @@ fun StoryCard(
 ) {
     val backgroundGradient = Brush.linearGradient(
         colors = listOf(
-            LightPurple,
-            PastelPink
+            Pink,
+            PastelPink,
+            SoftGreen,
+            PastelPink,
+            Pink
         ),
         start = Offset(0f, 0f),
         end = Offset( Float.POSITIVE_INFINITY,0f),
         tileMode = TileMode.Clamp
     )
 
+
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .border(2.dp, backgroundGradient, shape = RoundedCornerShape(10.dp)),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent // Transparent yaparak arka planın gradient olmasını sağlıyoruz
@@ -59,7 +67,7 @@ fun StoryCard(
     ) {
         Column(
             modifier = Modifier
-                .background(backgroundGradient) // Gradient arka plan burada uygulanıyor
+                //.background(backgroundGradient) // Gradient arka plan burada uygulanıyor
                 .padding(16.dp)
         ) {
             Row(

@@ -142,6 +142,9 @@ dependencies {
 
     implementation("com.google.firebase:firebase-firestore")
 
+    implementation("androidx.compose.material:material:1.4.0")
+
+
 }
 
 kapt {

@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.englishnotebook.ui.theme.Blue
+import com.example.englishnotebook.ui.theme.DarkGreen
 import com.example.englishnotebook.ui.theme.LightBlue
 import com.example.englishnotebook.ui.theme.LightOrange
 import com.example.englishnotebook.ui.theme.LightPurple
@@ -38,6 +39,7 @@ import com.example.englishnotebook.ui.theme.PastelYellow
 import com.example.englishnotebook.ui.theme.Pink
 import com.example.englishnotebook.ui.theme.Purple
 import com.example.englishnotebook.ui.theme.SoftBlue
+import com.example.englishnotebook.ui.theme.SoftGreen
 import com.example.englishnotebook.ui.theme.SoftPink
 import com.example.englishnotebook.ui.theme.SoftPurple
 
@@ -48,11 +50,10 @@ fun CategoryTabs(onCategorySelected: (String) -> Unit) {
 
     val backgroundGradient = Brush.linearGradient(
         colors = listOf(
-            LightPurple,
+            SoftGreen,
             PastelPink,
-            LightOrange,
-            PastelPink,
-            LightPurple
+            Pink,
+            PastelPink, SoftGreen
         ),
         start = Offset(0f, 0f),
         end = Offset( Float.POSITIVE_INFINITY,0f),
@@ -64,15 +65,6 @@ fun CategoryTabs(onCategorySelected: (String) -> Unit) {
             .fillMaxWidth()
             .background(Color.White) // Kart arka planına uygun bir arka plan rengi
     ) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 10.dp),
-            text = "Categories",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            color = Orange, // Başlık rengi, genel metin rengiyle uyumlu
-        )
 
         TabRow(
             modifier = Modifier

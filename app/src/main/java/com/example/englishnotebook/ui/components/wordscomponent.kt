@@ -1,6 +1,7 @@
 package com.example.englishnotebook.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,25 +28,32 @@ import com.example.englishnotebook.ui.theme.LightYellow
 import com.example.englishnotebook.ui.theme.Orange
 import com.example.englishnotebook.ui.theme.PastelPink
 import com.example.englishnotebook.ui.theme.PastelYellow
+import com.example.englishnotebook.ui.theme.Pink
 import com.example.englishnotebook.ui.theme.SoftBlue
+import com.example.englishnotebook.ui.theme.SoftGreen
 
 @Composable
 fun WordsCard(usedWords: List<String>, onAddClick: () -> Unit) {
+
     val backgroundGradient = Brush.linearGradient(
         colors = listOf(
+            Pink,
             PastelPink,
-            LightPurple
-
+            SoftGreen,
+            PastelPink,
+            Pink
         ),
         start = Offset(0f, 0f),
         end = Offset( Float.POSITIVE_INFINITY,0f),
         tileMode = TileMode.Clamp
     )
+
     Card(
         modifier = Modifier
             .padding(8.dp)
             .width(160.dp) // Sabit genişlik
-            .height(250.dp), // Sabit yükseklik
+            .height(250.dp)
+            .border(2.dp, backgroundGradient, shape = RoundedCornerShape(10.dp)), // Sabit yükseklik
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent // Transparent yaparak arka planın gradient olmasını sağlıyoruz
@@ -54,7 +62,7 @@ fun WordsCard(usedWords: List<String>, onAddClick: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize() // Card'ın tamamını doldur
-                .background(backgroundGradient)
+                //.background(backgroundGradient)
                 .padding(8.dp)
         ) {
             LazyColumn(
