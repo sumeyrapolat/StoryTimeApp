@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "188226796183",
+    "project_id": "storytime-34696",
+    "storage_bucket": "storytime-34696.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:188226796183:android:34b9481dd41abddd8a47d2",
+        "android_client_info": {
+          "package_name": "com.example.englishnotebook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4DLY0-Q-JLpa8dVO0p6tPQ0iT3xQcJ-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
