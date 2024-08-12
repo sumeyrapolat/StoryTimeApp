@@ -260,6 +260,7 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
                             val confirmPasswordValue = confirmPassword.value
                             if (passwordValue == confirmPasswordValue) {
                                 viewModel.signUp(emailValue, passwordValue)
+                                viewModel.saveUserToFirestore(emailValue, firstName.value, lastName.value, emailValue)
                             } else {
                                 Toast.makeText(context, "Passwords do not match!", Toast.LENGTH_SHORT).show()
                             }

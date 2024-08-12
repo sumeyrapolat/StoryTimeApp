@@ -19,7 +19,7 @@ import com.example.englishnotebook.viewmodel.SignUpViewModel
 
 @Composable
 fun Router(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "feed") {
+    NavHost(navController = navController, startDestination = "welcome") {
         composable("feed") { FeedScreen(navController) }
         composable("detail") { DetailScreen(navController) }
         composable("addstory") { AddStoryScreen(navController) }

@@ -3,6 +3,7 @@ package com.example.englishnotebook.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class SignInViewModel @Inject constructor( private val auth: FirebaseAuth) : ViewModel(){
+class SignInViewModel @Inject constructor( private val auth: FirebaseAuth, private val db: FirebaseFirestore) : ViewModel(){
 
     private val _signInState = MutableStateFlow<SignInState>(SignInState.Idle)
     val signInState = _signInState.asStateFlow()
