@@ -39,19 +39,20 @@ import com.example.englishnotebook.ui.theme.PastelPink
 import com.example.englishnotebook.ui.theme.PastelYellow
 import com.example.englishnotebook.ui.theme.Pink
 import com.example.englishnotebook.ui.theme.cardColor
+import com.example.englishnotebook.viewmodel.AuthViewModel
 import com.example.englishnotebook.viewmodel.SignInState
 import com.example.englishnotebook.viewmodel.SignInViewModel
 import com.example.englishnotebook.viewmodel.SignUpState
 
 @Composable
-fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hiltViewModel()){
+fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hiltViewModel(), authViewModel: AuthViewModel = hiltViewModel() ){
 
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val passwordVisible = remember { mutableStateOf(false) }
 
     val emailFocusRequester = remember { FocusRequester() }
-    val passwordFocusRequester = remember { FocusRequester() }
+    val passwordFocusRequester = remember { FocusRequester()    }
 
     val signInState = viewModel.signInState.collectAsState()
 
@@ -186,7 +187,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                     Spacer(modifier = Modifier.height(30.dp))
                     Button(
                         onClick = {
-                            viewModel.signIn(email.value, password.value)
+                            viewModel.signIn(email.value, password.value, onSuccess = {})
                         },
                         shape = RoundedCornerShape(45.dp),
                         colors = ButtonDefaults.buttonColors(
@@ -220,6 +221,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                     }
                 }
                 is SignInState.Success -> {
+                    authViewModel.loadUserData()
                     navController.navigate("feed")
                 }
                 is SignInState.Error -> {

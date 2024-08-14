@@ -1,5 +1,8 @@
 package com.example.englishnotebook.viewmodel
 
+import android.util.Log
+import androidx.compose.runtime.remember
+import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.englishnotebook.model.SignUpUser
@@ -13,49 +16,61 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor( private val auth: FirebaseAuth,
-                                           private val db: FirebaseFirestore) : ViewModel() {
+class SignUpViewModel @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val db: FirebaseFirestore
+) : ViewModel() {
 
-    // Kayıt durumu için StateFlow kullanımı
     private val _signUpState = MutableStateFlow<SignUpState>(SignUpState.Idle)
     val signUpState = _signUpState.asStateFlow()
 
-
-    fun signUp(email: String, password: String) {
+    fun signUp(email: String, password: String, firstName: String, lastName: String) {
         _signUpState.value = SignUpState.Loading
         viewModelScope.launch {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        _signUpState.value = SignUpState.Success("Sign up successful!")
+                        val userID = auth.currentUser?.uid
+                        val userEmail = auth.currentUser?.email
+                        Log.d("SignUpViewModel", "User ID: $userID")
+                        Log.d("SignUpViewModel", "User Email: $userEmail")
+                        Log.d("SignUpViewModel", "First Name: $firstName, Last Name: $lastName")
+
+                        if (userID != null) {
+                            saveUserToFirestore(userID, firstName, lastName, userEmail ?: email)
+                        } else {
+                            _signUpState.value = SignUpState.Error("User email not found")
+                            Log.e("SignUpViewModel", "User email not found")
+                        }
                     } else {
                         _signUpState.value = SignUpState.Error(task.exception?.message ?: "Unknown error")
+                        Log.e("SignUpViewModel", "Error: ${task.exception?.message ?: "Unknown error"}")
                     }
                 }
         }
     }
 
-    fun saveUserToFirestore(userId: String, firstName: String, lastName: String, email: String) {
 
-        val signUpUser = SignUpUser(
-            firstName = firstName,
-            lastName = lastName,
-            email = email
-        )
+    private fun saveUserToFirestore(userID: String, firstName: String, lastName: String, email: String) {
+        val signUpUser = SignUpUser(firstName = firstName, lastName = lastName, email = email)
+        Log.d("SignUpViewModel", "Saving User: $signUpUser with ID: $userID")
 
-        db.collection("Users").document(userId).set(signUpUser)
+        db.collection("Users").document(userID).set(signUpUser)
             .addOnSuccessListener {
-                _signUpState.value = SignUpState.Success("User saved to Firestore")
+                Log.d("SignUpViewModel", "User saved to Firestore successfully")
+                _signUpState.value = SignUpState.Success("Sign up successful!")
             }
             .addOnFailureListener { e ->
                 _signUpState.value = SignUpState.Error("Failed to save user to Firestore: ${e.message}")
-
-         }
+                Log.e("SignUpViewModel", "Failed to save user to Firestore: ${e.message}")
+            }
     }
 
-
-
+    fun resetSignUpState() {
+        _signUpState.value = SignUpState.Idle
+    }
 }
+
 
 // Kayıt durumu için durum sınıfları
 sealed class SignUpState {
@@ -64,3 +79,4 @@ sealed class SignUpState {
     data class Success(val message: String) : SignUpState()
     data class Error(val error: String) : SignUpState()
 }
+

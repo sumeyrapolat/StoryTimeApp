@@ -1,9 +1,10 @@
 package com.example.englishnotebook.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,12 +15,19 @@ import com.example.englishnotebook.ui.screens.ProfileScreen
 import com.example.englishnotebook.ui.screens.SignInScreen
 import com.example.englishnotebook.ui.screens.SignUpScreen
 import com.example.englishnotebook.ui.screens.WelcomeScreen
+import com.example.englishnotebook.viewmodel.AuthViewModel
 import com.example.englishnotebook.viewmodel.SignInViewModel
 import com.example.englishnotebook.viewmodel.SignUpViewModel
 
 @Composable
-fun Router(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "welcome") {
+fun Router(navController: NavHostController, authViewModel: AuthViewModel = hiltViewModel()) {
+
+    val userLoggedIn by authViewModel.userLoggedInState.collectAsState()
+
+    // userLoggedIn durumuna göre başlangıç ekranını belirleyin
+    val startDestination = if (userLoggedIn) "feed" else "welcome"
+
+    NavHost(navController = navController, startDestination = startDestination) {
         composable("feed") { FeedScreen(navController) }
         composable("detail") { DetailScreen(navController) }
         composable("addstory") { AddStoryScreen(navController) }

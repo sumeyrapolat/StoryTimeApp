@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,8 +65,6 @@ fun MyApp(viewModel: AuthViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val displayMetrics = context.resources.displayMetrics
     val screenWidth = displayMetrics.widthPixels.toFloat()
-    val screenHeight = displayMetrics.heightPixels.toFloat()
-    val drawerWidthDp = (screenWidth / 2).dp
 
     val backgroundGradient = Brush.linearGradient(
         colors = listOf(
@@ -151,6 +150,14 @@ fun MyApp(viewModel: AuthViewModel = hiltViewModel()) {
                                     modifier = Modifier.size(26.dp),
                                     imageVector = Icons.Default.AccountCircle,
                                     contentDescription = "Profile",
+                                    tint = if (currentDestination == "profile") Color.White else Color.Gray
+                                )
+                            }
+                            IconButton(onClick = { navController.navigate("profile") }) {
+                                Icon(
+                                    modifier = Modifier.size(26.dp),
+                                    imageVector = Icons.Default.Star,
+                                    contentDescription = "Diary",
                                     tint = if (currentDestination == "profile") Color.White else Color.Gray
                                 )
                             }

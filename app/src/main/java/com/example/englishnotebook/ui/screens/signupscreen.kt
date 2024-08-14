@@ -43,8 +43,7 @@ import com.example.englishnotebook.viewmodel.SignUpState
 import com.example.englishnotebook.viewmodel.SignUpViewModel
 
 @Composable
-fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hiltViewModel()){
-
+fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hiltViewModel()) {
     val firstName = remember { mutableStateOf("") }
     val lastName = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
@@ -54,55 +53,23 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
     val passwordVisible = remember { mutableStateOf(false) }
     val confirmPasswordVisible = remember { mutableStateOf(false) }
 
+    val signUpState = viewModel.signUpState.collectAsState()
+
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    val backgroundGradient = Brush.linearGradient(
+        colors = listOf(LightPurple, PastelPink, PastelYellow, PastelPink, LightBlue),
+        start = Offset(0f, 0f),
+        end = Offset(0f, context.resources.displayMetrics.heightPixels.toFloat()),
+        tileMode = TileMode.Clamp
+    )
+
     val firstNameFocusRequester = remember { FocusRequester() }
     val lastNameFocusRequester = remember { FocusRequester() }
     val emailFocusRequester = remember { FocusRequester() }
     val passwordFocusRequester = remember { FocusRequester() }
     val confirmPasswordFocusRequester = remember { FocusRequester() }
-
-    val signUpState = viewModel.signUpState.collectAsState()
-
-    val context = LocalContext.current
-    val keyboardController = LocalSoftwareKeyboardController.current // Klavye kontrolcüsü
-
-    val displayMetrics = context.resources.displayMetrics
-    val screenWidth = displayMetrics.widthPixels.toFloat()
-    val screenHeight = displayMetrics.heightPixels.toFloat()
-
-    val backgroundGradient = Brush.linearGradient(
-        colors = listOf(
-            LightPurple,
-            PastelPink,
-            PastelYellow,
-            PastelPink,
-            LightBlue
-        ),
-        start = Offset(0f, 0f),
-        end = Offset(0f, screenHeight),
-        tileMode = TileMode.Clamp
-    )
-
-    val radialOverlay = Brush.radialGradient(
-        colors = listOf(
-            Color(0xFFB8CEFF).copy(alpha = 0.7f),
-            Color.Transparent
-        ),
-        center = Offset(screenWidth / 2, screenHeight / 8),
-        radius = screenHeight / 5
-    )
-
-    val buttonBackgroundColor = Brush.linearGradient(
-        colors = listOf(
-            LightPurple,
-            Pink,
-            LightPurple
-        ),
-        start = Offset(0f, 0f),
-        end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
-    )
-
-    val backgroundColor = cardColor
-    val textColor = Color.White
 
     Box(
         modifier = Modifier
@@ -112,19 +79,20 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(radialOverlay),
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(Color(0xFFB8CEFF).copy(alpha = 0.7f), Color.Transparent),
+                        center = Offset(context.resources.displayMetrics.widthPixels.toFloat() / 2, context.resources.displayMetrics.heightPixels.toFloat() / 8),
+                        radius = context.resources.displayMetrics.heightPixels.toFloat() / 5
+                    )
+                ),
             contentAlignment = Alignment.BottomCenter
         ) {
-
             Card(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = backgroundColor
-                )
+                colors = CardDefaults.cardColors(containerColor = cardColor)
             ) {
-
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 40.dp)
@@ -244,23 +212,14 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
                         keyboardActions = KeyboardActions(
                             onDone = {
                                 keyboardController?.hide() // Klavyeyi kapat
-//                                if (password.value == confirmPassword.value) {
-//                                    viewModel.signUp(email.value, password.value)
-//                                } else {
-//                                    Toast.makeText(context, "Passwords do not match!", Toast.LENGTH_SHORT).show()
-//                                }
                             }
                         )
                     )
                     Spacer(modifier = Modifier.height(30.dp))
                     Button(
                         onClick = {
-                            val emailValue = email.value
-                            val passwordValue = password.value
-                            val confirmPasswordValue = confirmPassword.value
-                            if (passwordValue == confirmPasswordValue) {
-                                viewModel.signUp(emailValue, passwordValue)
-                                viewModel.saveUserToFirestore(emailValue, firstName.value, lastName.value, emailValue)
+                            if (password.value == confirmPassword.value) {
+                                viewModel.signUp(email.value, password.value, firstName.value, lastName.value)
                             } else {
                                 Toast.makeText(context, "Passwords do not match!", Toast.LENGTH_SHORT).show()
                             }
@@ -268,13 +227,21 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
                         shape = RoundedCornerShape(45.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent,
-                            contentColor = textColor
+                            contentColor = Color.White
                         ),
                         modifier = Modifier.fillMaxWidth()
-                            .background(buttonBackgroundColor, shape = RoundedCornerShape(45.dp))
+                            .background(
+                                Brush.linearGradient(
+                                    colors = listOf(LightPurple, Pink, LightPurple),
+                                    start = Offset(0f, 0f),
+                                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+                                ),
+                                shape = RoundedCornerShape(45.dp)
+                            )
                     ) {
                         Text(text = "Sign Up", modifier = Modifier.padding(8.dp), fontSize = 18.sp)
                     }
+
                     Spacer(modifier = Modifier.height(20.dp))
                     TextButton(onClick = { navController.navigate("signin") }) {
                         Text(
@@ -298,25 +265,22 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
             }
         }
         is SignUpState.Success -> {
-            navController.navigate("signin")
+            Toast.makeText(context, (signUpState.value as SignUpState.Success).message, Toast.LENGTH_LONG).show()
+            navController.navigate("signin") {
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+            }
+            viewModel.resetSignUpState() // Durumu sıfırlayın
         }
         is SignUpState.Error -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = (signUpState.value as SignUpState.Error).error,
-                    color = Color.Red,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+            Toast.makeText(context, (signUpState.value as SignUpState.Error).error, Toast.LENGTH_LONG).show()
+            viewModel.resetSignUpState() // Durumu sıfırlayın
         }
         else -> {
             Log.d("SignUpScreen", "Unknown state: ${signUpState.value}")
         }
     }
-
 }
+
+
