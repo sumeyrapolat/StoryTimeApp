@@ -1,5 +1,6 @@
 package com.example.englishnotebook.viewmodel.repository
 
+import android.net.Uri
 import android.util.Log
 import com.example.englishnotebook.model.SignUpUser
 import com.google.firebase.auth.FirebaseAuth
@@ -8,13 +9,16 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+
 
 class AuthRepository @Inject constructor(
     private val auth: FirebaseAuth,
-    private val db: FirebaseFirestore
+    private val db: FirebaseFirestore,
+    private val storage: FirebaseStorage // Firebase Storage referansı eklendi
 ) {
     private var cachedUserData: SignUpUser? = null
-
 
     suspend fun signIn(email: String, password: String): Result<FirebaseUser> {
         return try {
@@ -37,7 +41,7 @@ class AuthRepository @Inject constructor(
 
                 userData?.let {
                     cachedUserData = it  // Veriyi kaydet
-                    Log.d("AuthRepository", "Cached User Data: $cachedUserData") // Log the cached data
+                    Log.d("AuthRepository", "Cached User Data: $cachedUserData")
                     Result.success(it)
                 } ?: Result.failure(Exception("User data is null"))
             } else {
@@ -83,5 +87,23 @@ class AuthRepository @Inject constructor(
         return currentUser.uid
     }
 
-}
+    suspend fun uploadProfilePhoto(userID: String, imageUri: Uri): Result<String> {
+        return try {
+            val storageRef: StorageReference = storage.reference.child("profilePhotos/$userID.jpg")
+            val uploadTask = storageRef.putFile(imageUri).await()
+            val downloadUrl = storageRef.downloadUrl.await().toString()
 
+            // Fotoğraf URL'sini Firestore'a kaydet
+            db.collection("Users").document(userID).update("profilePhotoUrl", downloadUrl).await()
+
+            Result.success(downloadUrl)
+        } catch (e: Exception) {
+            Log.e("AuthRepository", "Error uploading profile photo: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    fun getProfilePhotoUrl(): String? {
+        return cachedUserData?.profilePhotoUrl
+    }
+}

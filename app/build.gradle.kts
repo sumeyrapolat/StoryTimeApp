@@ -144,6 +144,10 @@ dependencies {
 
     implementation("androidx.compose.material:material:1.4.0")
 
+    implementation("com.google.firebase:firebase-storage:21.0.0") // Firebase Storage bağımlılığı
+
+    implementation ("io.coil-kt:coil-compose:2.1.0")
+
 
 }
 

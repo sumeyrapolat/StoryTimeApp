@@ -1,32 +1,47 @@
 package com.example.englishnotebook.ui.components
 
-import android.util.Log
+import android.app.Activity
+import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.SubcomposeAsyncImage
 import com.example.englishnotebook.R
 import com.example.englishnotebook.ui.theme.DarkOrange
 import com.example.englishnotebook.ui.theme.Pink
 import com.example.englishnotebook.viewmodel.AuthViewModel
+import java.io.InputStream
+
+import coil.compose.rememberImagePainter
 
 @Composable
 fun DrawerContent(
@@ -35,22 +50,23 @@ fun DrawerContent(
 ) {
     val context = LocalContext.current
     val passwordResetState by viewModel.passwordResetState.collectAsState()
+    val cachedUserData = viewModel.userDataState.collectAsState().value
+    val profileImageUri by viewModel.userProfilePhotoUri.collectAsState()
 
-    // onViewInitialized() çağırıyoruz
+    // Call `onViewInitialized()` here since it's a side effect
     LaunchedEffect(Unit) {
         viewModel.onViewInitialized()
     }
 
-    val cachedUserData = viewModel.userDataState.collectAsState().value
-
-    // Alınan cache datanın içeriğini log ile yazdırma
-    LaunchedEffect(cachedUserData) {
-        if (cachedUserData is AuthViewModel.UserDataState.Success) {
-            Log.d("DrawerContent", "Cached User Data: ${cachedUserData.firstName} ${cachedUserData.lastName} - ${cachedUserData.email}")
-        } else if (cachedUserData is AuthViewModel.UserDataState.Error) {
-            Log.d("DrawerContent", "Error loading user data: ${cachedUserData.message}")
-        } else {
-            Log.d("DrawerContent", "Loading user data...")
+    // Fotoğrafı seçmek için kullanıcının galerisini açacak bir launcher
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val selectedImageUri = result.data?.data
+            selectedImageUri?.let { uri ->
+                viewModel.updateUserProfilePhoto(uri) // Profil fotoğrafını ViewModel'de güncelle
+            }
         }
     }
 
@@ -65,30 +81,69 @@ fun DrawerContent(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
-                    contentDescription = "User Profile Picture",
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clip(RoundedCornerShape(100.dp))
-                )
+                Box(
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    // Profil fotoğrafı yüklenirken Coil kullanılır
+                    SubcomposeAsyncImage(
+                        model = profileImageUri,
+                        contentDescription = "User Profile Picture",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(150.dp)
+                            .clip(CircleShape),
+                        loading = {
+                            CircularProgressIndicator() // Yükleme sırasında gösterilecek ProgressBar
+                        },
+                        error = {
+                            Image(
+                                painter = painterResource(id = R.drawable.user),
+                                contentDescription = "Default User Profile Picture",
+                                modifier = Modifier
+                                    .size(150.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
+                    )
+                    // Kamera ikonu
+                    IconButton(
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_PICK)
+                            intent.type = "image/*"
+                            galleryLauncher.launch(intent)
+                        },
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(Color.Gray.copy(alpha = 0.8f), CircleShape)
+                            .clip(CircleShape)
+                            .padding(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CameraAlt,
+                            contentDescription = "Change Profile Picture",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
                     text = userFullName,
                     fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.fjallaoneregular, FontWeight.Normal)),
                     color = DarkOrange,
+                    fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
                     text = userEmail,
                     fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.fjallaoneregular, FontWeight.Normal)),
                     color = DarkOrange,
+                    fontWeight = FontWeight.Bold
+
                 )
 
                 Spacer(modifier = Modifier.height(64.dp))
@@ -113,7 +168,6 @@ fun DrawerContent(
                     Text(
                         text = "Sign Out",
                         fontSize = 18.sp,
-                        fontFamily = FontFamily(Font(R.font.fjallaoneregular, FontWeight.Normal)),
                         color = DarkOrange,
                     )
                 }
@@ -135,7 +189,6 @@ fun DrawerContent(
                     Text(
                         text = "Reset Password",
                         fontSize = 18.sp,
-                        fontFamily = FontFamily(Font(R.font.fjallaoneregular, FontWeight.Normal)),
                         color = DarkOrange,
                     )
                 }
@@ -158,7 +211,6 @@ fun DrawerContent(
             val errorMessage = cachedUserData.message ?: "An unknown error occurred"
             Text(text = errorMessage, color = Color.Red)
         } else {
-            // Bu durumda hala Loading veya başka bir durumdaysa bir şey gösterebiliriz.
             CircularProgressIndicator()
         }
     }
