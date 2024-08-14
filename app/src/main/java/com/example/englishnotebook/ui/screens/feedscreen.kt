@@ -30,9 +30,18 @@ import com.example.englishnotebook.ui.components.CategoryTabs
 import com.example.englishnotebook.ui.components.StoryCard
 import com.example.englishnotebook.ui.components.WordsCard
 import com.example.englishnotebook.viewmodel.AuthViewModel
+import com.example.englishnotebook.viewmodel.FeedViewModel
 
 @Composable
-fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hiltViewModel()) {
+fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hiltViewModel(), viewModel: FeedViewModel = hiltViewModel()) {
+
+    val words by viewModel.words.collectAsState()
+
+    // Eğer veri henüz yüklenmediyse
+    LaunchedEffect(Unit) {
+        viewModel.fetchWords()
+    }
+
     var selectedCategory by remember { mutableStateOf("Stories") }
 
     val userLoggedIn by authViewModel.userLoggedInState.collectAsState()
@@ -43,16 +52,6 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
         Story(R.drawable.ic_launcher_foreground, "User3", "Story Title 3", "Yet another story content with a lot of text that needs to be truncated after 8 lines.", listOf("Word5", "Word6")),
         Story(R.drawable.ic_launcher_foreground, "User4", "Story Title 4", "Yet another story content with a lot of text that needs to beYet another story content with a lot of text that needs to be trYet another story content with a lot of text that needs to be trYet another story content with a lot of text that needs to be trYet another story content with a lot of text that needs to be trYet another story content with a lot of text that needs to be tr truncated after 8 lines.", listOf("Word5", "Word6"))
     )
-
-    val firstSetOfWords = listOf(
-        "abandon", "keen", "jealous", "tact", "oath", "vacant",
-        "hardship", "gallant", "data", "unaccustomed", "bachelor", "qualify"
-    )
-    val secondSetOfWords = listOf(
-        "corpse", "conceal", "dismal", "frigid", "inhabit", "numb",
-        "peril", "recline", "shriek", "sinister", "tempt", "wager"
-    )
-    val wordsGroups = listOf(firstSetOfWords, secondSetOfWords)
 
 
     LaunchedEffect(userLoggedIn) {
@@ -101,7 +100,7 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(wordsGroups) { wordsGroup ->
+                        items(words) { wordsGroup ->
                             WordsCard(usedWords = wordsGroup, onAddClick = {
                                 navController.navigate("addstory")
                             })

@@ -148,6 +148,8 @@ dependencies {
 
     implementation ("io.coil-kt:coil-compose:2.1.0")
 
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0") // CSV verisini ham string olarak almak için
+    implementation("com.opencsv:opencsv:5.5.2")
 
 }
 
