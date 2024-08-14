@@ -41,7 +41,6 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-
     fun resetSignInState() {
         _signInState.value = SignInState.Idle
     }

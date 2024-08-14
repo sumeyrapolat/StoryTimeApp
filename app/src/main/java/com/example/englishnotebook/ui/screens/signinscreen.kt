@@ -33,11 +33,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.englishnotebook.ui.theme.LightBlue
+import com.example.englishnotebook.ui.theme.LightPink
 import com.example.englishnotebook.ui.theme.LightPurple
 import com.example.englishnotebook.ui.theme.LightYellow
 import com.example.englishnotebook.ui.theme.PastelPink
 import com.example.englishnotebook.ui.theme.PastelYellow
 import com.example.englishnotebook.ui.theme.Pink
+import com.example.englishnotebook.ui.theme.SoftGreen
 import com.example.englishnotebook.ui.theme.cardColor
 import com.example.englishnotebook.viewmodel.AuthViewModel
 import com.example.englishnotebook.viewmodel.SignInState
@@ -45,19 +47,23 @@ import com.example.englishnotebook.viewmodel.SignInViewModel
 import com.example.englishnotebook.viewmodel.SignUpState
 
 @Composable
-fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hiltViewModel(), authViewModel: AuthViewModel = hiltViewModel() ){
+fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hiltViewModel(), authViewModel: AuthViewModel = hiltViewModel()) {
 
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val passwordVisible = remember { mutableStateOf(false) }
+    val showResetPasswordDialog = remember { mutableStateOf(false) }
 
     val emailFocusRequester = remember { FocusRequester() }
-    val passwordFocusRequester = remember { FocusRequester()    }
+    val passwordFocusRequester = remember { FocusRequester() }
 
     val signInState = viewModel.signInState.collectAsState()
 
     // Klavye kontrolcüsü
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    // Snackbar host state
+    val snackbarHostState = remember { SnackbarHostState() }
 
     // Ekran boyutlarını alıyoruz
     val context = LocalContext.current
@@ -77,7 +83,6 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
         end = Offset(0f, screenHeight),
         tileMode = TileMode.Clamp
     )
-
 
     val radialOverlay = Brush.radialGradient(
         colors = listOf(
@@ -208,7 +213,76 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                             color = Pink
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(5.dp))
+                    TextButton(onClick = {
+                        showResetPasswordDialog.value = true
+                    }) {
+                        Text(
+                            text = "Forgot Password",
+                            fontSize = 16.sp,
+                            color = Pink
+                        )
+                    }
                 }
+            }
+
+            // Dialog for email input
+            if (showResetPasswordDialog.value) {
+                AlertDialog(
+                    onDismissRequest = { showResetPasswordDialog.value = false },
+                    title = {
+                        Text(
+                            "Reset Password",
+                            color = Pink, // Başlık rengi
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    text = {
+                        Column {
+                            Text(
+                                "Please enter your email to receive password reset instructions.",
+                                color = Color.DarkGray,
+                                fontSize = 16.sp
+                            )
+                            OutlinedTextField(
+                                value = email.value,
+                                onValueChange = { email.value = it },
+                                label = { Text("Email", color = Color.Gray) }, // Label rengi
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                authViewModel.forgotPassword(email.value)
+                                showResetPasswordDialog.value = false
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Pink ,
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text("Send")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { showResetPasswordDialog.value = false }
+                        ) {
+                            Text(
+                                "Cancel",
+                                color = Pink // İptal butonunun metin rengi
+                            )
+                        }
+                    },
+                    containerColor = LightPink,
+                    shape = RoundedCornerShape(25.dp)
+                )
+
+
             }
 
             when (signInState.value) {
@@ -244,5 +318,4 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
             }
         }
     }
-
 }
