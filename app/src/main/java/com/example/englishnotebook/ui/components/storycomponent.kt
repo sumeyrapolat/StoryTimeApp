@@ -1,5 +1,4 @@
 package com.example.englishnotebook.ui.components
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,26 +15,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.englishnotebook.R
-import com.example.englishnotebook.ui.theme.LightBlue
-import com.example.englishnotebook.ui.theme.LightOrange
-import com.example.englishnotebook.ui.theme.LightPurple
-import com.example.englishnotebook.ui.theme.LightYellow
+import coil.compose.rememberImagePainter
 import com.example.englishnotebook.ui.theme.PastelPink
 import com.example.englishnotebook.ui.theme.Pink
-import com.example.englishnotebook.ui.theme.SoftBlue
 import com.example.englishnotebook.ui.theme.SoftGreen
-import com.example.englishnotebook.ui.theme.SoftPink
 
 @Composable
 fun StoryCard(
-    userPhoto: Int, // Resource ID for user photo
+    userPhoto: String, // Firebase Storage URL veya Image URL
     userName: String,
     storyTitle: String,
     storyContent: String,
@@ -50,10 +41,9 @@ fun StoryCard(
             Pink
         ),
         start = Offset(0f, 0f),
-        end = Offset( Float.POSITIVE_INFINITY,0f),
+        end = Offset(Float.POSITIVE_INFINITY, 0f),
         tileMode = TileMode.Clamp
     )
-
 
     Card(
         modifier = Modifier
@@ -67,7 +57,6 @@ fun StoryCard(
     ) {
         Column(
             modifier = Modifier
-                //.background(backgroundGradient) // Gradient arka plan burada uygulanıyor
                 .padding(16.dp)
         ) {
             Row(
@@ -75,7 +64,7 @@ fun StoryCard(
                 modifier = Modifier.padding(bottom = 8.dp)
             ) {
                 Image(
-                    painter = painterResource(id = userPhoto),
+                    painter = rememberImagePainter(data = userPhoto), // Coil ile image yükleme
                     contentDescription = "User Photo",
                     modifier = Modifier
                         .size(40.dp)
@@ -112,16 +101,4 @@ fun StoryCard(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun StoryCardPreview() {
-    StoryCard(
-        userPhoto = R.drawable.ic_launcher_foreground,
-        userName = "Sarhoskedi",
-        usedWords = listOf("word1", "word2", "word3"),
-        storyContent = "dsfghfgfdsddsfdsfghfgfdsddsfghfgfdsfghfgfdsddsfdsfghfgfdsddsfghfgfdsdfsghjgfhgsafsghjgfhgsaghfgfdsfghfgfdsddsfdsfghfgfdsddsfghfgfdsfghfgfdsddsfdsfghfgfdsddsfghfgfdsdfsghjgfhgsafsghjgfhgsaghfgfdsdfsghjgfhgsafsghjgfhgsadsdfsghjgfhgsafsghjgfhgsaghfgfdsdfsghjgfhgsafsghjgfhgsadsdfsghjgfhgsafsghjgfhgsadsdfsghjgfhgsafsghjgfhgsaghfgfdsdfsghjgfhgsafsghjgfhgsadsfghfgfdsddsfdsfghfgfdsddsfghfgfdsfghfgfdsddsfdsfghfgfdsddsfghfgfdsdfsghjgfhgsafsghjgfhgsaghfgfdsfghfgfdsddsfdsfghfgfdsddsfghfgfdsfghfgfdsddsfdsfghfgfdsddsfghfgfdsdfsghjgfhgsafsghjgfhgsaghfgfdsdfsghjgfhgsafsghjgfhgsadsdfsghjgfhgsafsghjgfhgsaghfgfdsdfsghjgfhgsafsghjgfhgsadsdfsghjgfhgsafsghjgfhgsadsdfsghjgfhgsafsghjgfhgsaghfgfdsdfsghjgfhgsafsghjgfhgsa",
-        storyTitle = "title"
-    )
 }

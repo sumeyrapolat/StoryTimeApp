@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.englishnotebook.ui.theme.Blue
 import com.example.englishnotebook.ui.theme.DarkGreen
 import com.example.englishnotebook.ui.theme.LightBlue
@@ -41,11 +42,14 @@ import com.example.englishnotebook.ui.theme.Purple
 import com.example.englishnotebook.ui.theme.SoftBlue
 import com.example.englishnotebook.ui.theme.SoftGreen
 import com.example.englishnotebook.ui.theme.SoftPink
+import com.example.englishnotebook.viewmodel.FeedViewModel
 
 @Composable
-fun AddStoryScreen(navController: NavController, words: List<String>) {
+fun AddStoryScreen(navController: NavController, words: List<String>, viewModel: FeedViewModel = hiltViewModel()) {
     var title by remember { mutableStateOf(TextFieldValue("")) }
     var storyContent by remember { mutableStateOf(TextFieldValue("")) }
+
+    val postState by viewModel.postState.collectAsState()
 
     val backgroundGradient = Brush.linearGradient(
         colors = listOf(
@@ -73,7 +77,7 @@ fun AddStoryScreen(navController: NavController, words: List<String>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White) // Tüm ekranın arka planını siyah yapıyoruz
+            .background(Color.White)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -87,7 +91,7 @@ fun AddStoryScreen(navController: NavController, words: List<String>) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(backgroundGradient) // Gradient arka plan burada uygulanıyor
+                    .background(backgroundGradient)
             ) {
                 LazyRow(
                     modifier = Modifier
@@ -186,20 +190,24 @@ fun AddStoryScreen(navController: NavController, words: List<String>) {
 
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(), // Box genişliğini tam genişlik yap
-                    contentAlignment = Alignment.Center // Box içindeki içeriği ortala
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
                 ) {
                     Button(
                         onClick = {
-                            // Hikaye kaydetme işlevi burada çalıştırılabilir
+                            viewModel.savePost(
+                                title.text,
+                                storyContent.text,
+                                words
+                            )
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent // Butonun arka planını şeffaf yap
+                            containerColor = Color.Transparent
                         ),
                         shape = RoundedCornerShape(45.dp),
                         modifier = Modifier
                             .wrapContentWidth()
-                            .background(buttonBackgroundGradient, shape = RoundedCornerShape(45.dp)) // Gradient arka planı doğrudan butona uyguluyoruz
+                            .background(buttonBackgroundGradient, shape = RoundedCornerShape(45.dp))
                     ) {
                         Text(
                             text = "Save Story",
@@ -210,6 +218,19 @@ fun AddStoryScreen(navController: NavController, words: List<String>) {
                     }
                 }
             }
+        }
+    }
+
+    LaunchedEffect(postState) {
+        when (postState) {
+            is FeedViewModel.PostState.Success -> {
+                viewModel.resetState()
+                navController.navigate("feed")
+            }
+            is FeedViewModel.PostState.Error -> {
+                // Hata mesajı göstermek için Snackbar veya başka bir UI bileşeni ekleyebilirsiniz
+            }
+            else -> Unit
         }
     }
 }

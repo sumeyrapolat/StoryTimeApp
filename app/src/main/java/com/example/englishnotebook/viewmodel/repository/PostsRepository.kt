@@ -1,0 +1,59 @@
+package com.example.englishnotebook.viewmodel.repository
+
+import com.example.englishnotebook.model.Post
+import com.example.englishnotebook.model.SignUpUser
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+
+
+class PostsRepository @Inject constructor(
+    private val db: FirebaseFirestore
+) {
+    suspend fun addPost(post: Post, userId: String): Result<Unit> {
+        return try {
+            db.collection("Posts")
+                .document(userId)
+                .collection("UserPosts")
+                .add(post)
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getPostsByUserId(userId: String): Result<List<Post>> {
+        return try {
+            val documents = db.collection("Posts")
+                .document(userId)
+                .collection("UserPosts")
+                .get()
+                .await()
+
+            val posts = documents.mapNotNull { it.toObject(Post::class.java) }
+            Result.success(posts)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getUserProfile(userId: String): Result<SignUpUser> {
+        return try {
+            val document = db.collection("Users")
+                .document(userId)
+                .get()
+                .await()
+
+            val userProfile = document.toObject(SignUpUser::class.java)
+            if (userProfile != null) {
+                Result.success(userProfile)
+            } else {
+                Result.failure(Exception("User profile not found"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+}
+

@@ -23,6 +23,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.englishnotebook.R
@@ -36,26 +37,16 @@ import com.example.englishnotebook.viewmodel.FeedViewModel
 fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hiltViewModel(), viewModel: FeedViewModel = hiltViewModel()) {
 
     val words by viewModel.words.collectAsState()
-
-    // Eğer veri henüz yüklenmediyse
-    LaunchedEffect(Unit) {
-        viewModel.fetchWords()
-    }
+    val stories by viewModel.stories.collectAsState()
 
     var selectedCategory by remember { mutableStateOf("Stories") }
-
     val userLoggedIn by authViewModel.userLoggedInState.collectAsState()
 
-    val stories = listOf(
-        Story(R.drawable.ic_launcher_foreground, "User1", "Story Title 1", "This is the story content. It can be very long and should be truncated if it exceeds 8 lines.", listOf("Word1", "Word2")),
-        Story(R.drawable.ic_launcher_foreground, "User2", "Story Title 2", "Another story content that should also be truncated if it is too long.", listOf("Word3", "Word4")),
-        Story(R.drawable.ic_launcher_foreground, "User3", "Story Title 3", "Yet another story content with a lot of text that needs to be truncated after 8 lines.", listOf("Word5", "Word6")),
-        Story(R.drawable.ic_launcher_foreground, "User4", "Story Title 4", "Yet another story content with a lot of text that needs to beYet another story content with a lot of text that needs to be trYet another story content with a lot of text that needs to be trYet another story content with a lot of text that needs to be trYet another story content with a lot of text that needs to be trYet another story content with a lot of text that needs to be tr truncated after 8 lines.", listOf("Word5", "Word6"))
-    )
-
-
     LaunchedEffect(userLoggedIn) {
-        if (!userLoggedIn) {
+        if (userLoggedIn) {
+            viewModel.fetchStoriesFromFirestore()
+            viewModel.fetchWords()
+        } else {
             navController.navigate("login") {
                 popUpTo(navController.graph.startDestinationId) {
                     inclusive = true
@@ -64,11 +55,12 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
         }
     }
 
+
     if (userLoggedIn) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White), // Gradient arka plan uygulandı
+                .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CategoryTabs(onCategorySelected = { category ->
@@ -78,23 +70,38 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
 
             when (selectedCategory) {
                 "Stories" -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(stories) { story ->
-                            StoryCard(
-                                userPhoto = story.userPhoto,
-                                userName = story.userName,
-                                storyTitle = story.title,
-                                storyContent = story.content,
-                                usedWords = story.usedWords
+                    if (stories.isEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            // Hikaye listesi boşsa kullanıcıya mesaj göster
+                            Text(
+                                text = "Henüz bir hikaye eklenmedi.",
+                                color = Color.Gray,
+                                fontSize = 18.sp
                             )
+                        }
+                    } else {
+                        // Hikaye listesi doluysa hikayeleri göster
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            items(stories) { story ->
+                                StoryCard(
+                                    userPhoto = story.userPhoto,
+                                    userName = story.userName,
+                                    storyTitle = story.title,
+                                    storyContent = story.content,
+                                    usedWords = story.usedWords
+                                )
+                            }
                         }
                     }
                 }
                 "Words" -> {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(2), // 2 sütunlu grid
+                        columns = GridCells.Fixed(2),
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -110,15 +117,17 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
             }
         }
     } else {
-        // Yükleme ekranı veya boş bir ekran gösterebilirsiniz
-        CircularProgressIndicator()
+        CircularProgressIndicator() // Kullanıcı giriş yapmadığında veya yükleme sırasında göstermek için
     }
 }
 
+
 data class Story(
-    val userPhoto: Int, // Resource ID for user photo
-    val userName: String,
+    val userPhoto: String, // Firebase Storage URL veya Image URL
+    val userName: String,  // firstName + lastName
     val title: String,
     val content: String,
-    val usedWords: List<String>
+    val usedWords: List<String>,
+    val timestamp: Long,
+    val userEmail: String
 )

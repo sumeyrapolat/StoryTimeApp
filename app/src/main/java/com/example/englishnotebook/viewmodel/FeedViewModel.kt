@@ -4,8 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.englishnotebook.api.RetrofitInstance
+import com.example.englishnotebook.model.Post
 import com.example.englishnotebook.room.entity.WordEntity
+import com.example.englishnotebook.ui.screens.Story
+import com.example.englishnotebook.viewmodel.repository.PostsRepository
 import com.example.englishnotebook.viewmodel.repository.WordsRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.opencsv.CSVReader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,18 +18,64 @@ import kotlinx.coroutines.launch
 import java.io.StringReader
 import javax.inject.Inject
 
+
+
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    private val repository: WordsRepository
+    private val repository: WordsRepository,
+    private val postsRepository: PostsRepository,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
 
     private val _words = MutableStateFlow<List<List<String>>>(emptyList())
     val words: StateFlow<List<List<String>>> = _words
 
+    private val _stories = MutableStateFlow<List<Story>>(emptyList())
+    val stories: StateFlow<List<Story>> = _stories
+
+    private val _postState = MutableStateFlow<PostState>(PostState.Idle)
+    val postState: StateFlow<PostState> = _postState
+
+    init {
+        fetchStoriesFromFirestore()
+    }
+
+    fun fetchStoriesFromFirestore() {
+        viewModelScope.launch {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val userId = currentUser.uid
+                val postsResult = postsRepository.getPostsByUserId(userId)
+                val userProfileResult = postsRepository.getUserProfile(userId)
+
+                if (postsResult.isSuccess && userProfileResult.isSuccess) {
+                    val posts = postsResult.getOrNull().orEmpty()
+                    val userProfile = userProfileResult.getOrNull()
+
+                    if (userProfile != null) {
+                        val stories = posts.map { post ->
+                            Story(
+                                userPhoto = userProfile.profilePhotoUrl ?: "",
+                                userName = "${userProfile.firstName} ${userProfile.lastName}",
+                                title = post.title,
+                                content = post.content,
+                                usedWords = post.usedWords,
+                                timestamp = post.timestamp,
+                                userEmail = userProfile.email
+                            )
+                        }
+                        _stories.value = stories
+                    }
+                } else {
+                    Log.e("FeedViewModel", "Error fetching stories or user profile")
+                }
+            }
+        }
+    }
+
     fun fetchWords() {
         viewModelScope.launch {
             try {
-                // Eğer veritabanında veri yoksa API'den çek
                 if (repository.getAllWords().isEmpty()) {
                     Log.d("FeedViewModel", "Fetching words from API")
                     val csvData = RetrofitInstance.apiService.getWordsCSV()
@@ -34,9 +84,8 @@ class FeedViewModel @Inject constructor(
                     csvReader.readNext() // Başlık satırını atla
 
                     val wordLists = csvReader.readAll().map { it.toList() }
-                    val groupedWordLists: List<List<String>> = wordLists.chunked(size = 12).map { it.flatten() } // Kelimeleri 12'lik gruplara ayır ve düzleştir
+                    val groupedWordLists: List<List<String>> = wordLists.chunked(size = 12).map { it.flatten() }
 
-                // Veritabanına 12'lik gruplar halinde kaydet
                     groupedWordLists.forEach { group ->
                         val wordEntities = group.map { WordEntity(word = it) }
                         repository.insertWords(wordEntities)
@@ -45,7 +94,6 @@ class FeedViewModel @Inject constructor(
                     _words.value = groupedWordLists
 
                 } else {
-                    // Veritabanındaki veriyi yükle
                     Log.d("FeedViewModel", "Fetching words from database")
                     val wordsFromDb = repository.getAllWords()
                     val groupedWords = wordsFromDb.map { it.word }.chunked(12)
@@ -56,5 +104,41 @@ class FeedViewModel @Inject constructor(
             }
         }
     }
-}
 
+    fun savePost(title: String, content: String, usedWords: List<String>) {
+        val currentUser = auth.currentUser
+
+        if (currentUser == null) {
+            _postState.value = PostState.Error("User not logged in")
+            return
+        }
+
+        val post = Post(
+            title = title,
+            content = content,
+            usedWords = usedWords
+        )
+
+        _postState.value = PostState.Loading
+
+        viewModelScope.launch {
+            val result = postsRepository.addPost(post, currentUser.uid)
+            if (result.isSuccess) {
+                _postState.value = PostState.Success
+            } else {
+                _postState.value = PostState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun resetState() {
+        _postState.value = PostState.Idle
+    }
+
+    sealed class PostState {
+        object Idle : PostState()
+        object Loading : PostState()
+        object Success : PostState()
+        data class Error(val errorMessage: String) : PostState()
+    }
+}
