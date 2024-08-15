@@ -1,5 +1,7 @@
 package com.example.englishnotebook.model
 
+
+
 data class Post(
     val title: String = "",
     val content: String = "",

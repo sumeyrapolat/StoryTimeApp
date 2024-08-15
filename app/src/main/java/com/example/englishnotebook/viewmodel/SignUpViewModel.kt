@@ -1,14 +1,11 @@
 package com.example.englishnotebook.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.remember
-import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.englishnotebook.model.SignUpUser
+import com.example.englishnotebook.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestoreSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,7 +49,7 @@ class SignUpViewModel @Inject constructor(
 
 
     private fun saveUserToFirestore(userID: String, firstName: String, lastName: String, email: String) {
-        val signUpUser = SignUpUser(firstName = firstName, lastName = lastName, email = email)
+        val signUpUser = User(firstName = firstName, lastName = lastName, email = email)
         Log.d("SignUpViewModel", "Saving User: $signUpUser with ID: $userID")
 
         db.collection("Users").document(userID).set(signUpUser)

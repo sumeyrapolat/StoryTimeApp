@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.englishnotebook.api.RetrofitInstance
 import com.example.englishnotebook.model.Post
+import com.example.englishnotebook.model.Story
 import com.example.englishnotebook.room.entity.WordEntity
-import com.example.englishnotebook.ui.screens.Story
 import com.example.englishnotebook.viewmodel.repository.PostsRepository
 import com.example.englishnotebook.viewmodel.repository.WordsRepository
 import com.google.firebase.auth.FirebaseAuth

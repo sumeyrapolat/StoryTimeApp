@@ -32,7 +32,7 @@ import com.example.englishnotebook.ui.components.StoryCard
 import com.example.englishnotebook.ui.components.WordsCard
 import com.example.englishnotebook.viewmodel.AuthViewModel
 import com.example.englishnotebook.viewmodel.FeedViewModel
-
+import com.example.englishnotebook.model.Story
 @Composable
 fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hiltViewModel(), viewModel: FeedViewModel = hiltViewModel()) {
 
@@ -55,7 +55,6 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
         }
     }
 
-
     if (userLoggedIn) {
         Column(
             modifier = Modifier
@@ -75,7 +74,6 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            // Hikaye listesi boşsa kullanıcıya mesaj göster
                             Text(
                                 text = "Henüz bir hikaye eklenmedi.",
                                 color = Color.Gray,
@@ -83,7 +81,6 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
                             )
                         }
                     } else {
-                        // Hikaye listesi doluysa hikayeleri göster
                         LazyColumn(
                             modifier = Modifier.fillMaxSize()
                         ) {
@@ -121,13 +118,3 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
     }
 }
 
-
-data class Story(
-    val userPhoto: String, // Firebase Storage URL veya Image URL
-    val userName: String,  // firstName + lastName
-    val title: String,
-    val content: String,
-    val usedWords: List<String>,
-    val timestamp: Long,
-    val userEmail: String
-)

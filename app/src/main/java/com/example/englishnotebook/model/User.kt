@@ -1,6 +1,6 @@
 package com.example.englishnotebook.model
 
-data class SignUpUser(
+data class User(
     val firstName: String = "",
     val lastName: String = "",
     val email: String = "",

@@ -1,7 +1,7 @@
 package com.example.englishnotebook.viewmodel.repository
 
 import com.example.englishnotebook.model.Post
-import com.example.englishnotebook.model.SignUpUser
+import com.example.englishnotebook.model.User
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -38,14 +38,14 @@ class PostsRepository @Inject constructor(
         }
     }
 
-    suspend fun getUserProfile(userId: String): Result<SignUpUser> {
+    suspend fun getUserProfile(userId: String): Result<User> {
         return try {
             val document = db.collection("Users")
                 .document(userId)
                 .get()
                 .await()
 
-            val userProfile = document.toObject(SignUpUser::class.java)
+            val userProfile = document.toObject(User::class.java)
             if (userProfile != null) {
                 Result.success(userProfile)
             } else {
@@ -56,4 +56,3 @@ class PostsRepository @Inject constructor(
         }
     }
 }
-

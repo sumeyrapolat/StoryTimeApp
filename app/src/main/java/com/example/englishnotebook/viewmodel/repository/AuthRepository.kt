@@ -2,7 +2,7 @@ package com.example.englishnotebook.viewmodel.repository
 
 import android.net.Uri
 import android.util.Log
-import com.example.englishnotebook.model.SignUpUser
+import com.example.englishnotebook.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,7 +18,7 @@ class AuthRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val storage: FirebaseStorage // Firebase Storage referansı eklendi
 ) {
-    private var cachedUserData: SignUpUser? = null
+    private var cachedUserData: User? = null
 
     suspend fun signIn(email: String, password: String): Result<FirebaseUser> {
         return try {
@@ -29,14 +29,14 @@ class AuthRepository @Inject constructor(
         }
     }
 
-    suspend fun loadUserData(userID: String): Result<SignUpUser> {
+    suspend fun loadUserData(userID: String): Result<User> {
         return try {
             val document = db.collection("Users").document(userID).get().await()
             Log.d("AuthRepository", "Document snapshot: $document")
             Log.d("AuthRepository", "Fetching data for userID: $userID")
 
             if (document.exists()) {
-                val userData = document.toObject(SignUpUser::class.java)
+                val userData = document.toObject(User::class.java)
                 Log.d("AuthRepository", "User data: $userData")
 
                 userData?.let {
@@ -56,7 +56,7 @@ class AuthRepository @Inject constructor(
         }
     }
 
-    fun getCachedUserData(): SignUpUser? {
+    fun getCachedUserData(): User? {
         return cachedUserData
     }
 
