@@ -44,62 +44,84 @@ fun WordsCard(usedWords: List<String>, onAddClick: () -> Unit) {
             Pink
         ),
         start = Offset(0f, 0f),
-        end = Offset( Float.POSITIVE_INFINITY,0f),
+        end = Offset(Float.POSITIVE_INFINITY, 0f),
         tileMode = TileMode.Clamp
     )
 
-    Card(
+
+
+    Box(
         modifier = Modifier
             .padding(8.dp)
             .width(160.dp) // Sabit genişlik
-            .height(250.dp)
-            .border(2.dp, backgroundGradient, shape = RoundedCornerShape(10.dp)), // Sabit yükseklik
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent // Transparent yaparak arka planın gradient olmasını sağlıyoruz
-        )
+            .height(250.dp) // Sabit yükseklik
     ) {
-        Box(
+        // Arkadaki gradient Card
+        Card(
             modifier = Modifier
-                .fillMaxSize() // Card'ın tamamını doldur
-                //.background(backgroundGradient)
-                .padding(8.dp)
+                .fillMaxSize()
+                .offset(x = 8.dp, y = 8.dp), // Hafif bir kaydırma ekleyin
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Transparent
+            )
         ) {
-            LazyColumn(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center),
-                verticalArrangement = Arrangement.Center, // Ortaya hizala
-                horizontalAlignment = Alignment.CenterHorizontally // Ortaya hizala
+                    .fillMaxSize()
+                    .background(backgroundGradient)
+            )
+        }
+
+        // Üstteki beyaz Card
+        Card(
+            modifier = Modifier
+                .matchParentSize()
+                .border(2.dp, backgroundGradient, shape = RoundedCornerShape(10.dp)),
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            )
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
             ) {
-                items(usedWords) { word ->
-                    Text(
-                        text = word,
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .fillMaxWidth() // Tüm genişliği kapla
-                            .padding(bottom = 8.dp),
-                        textAlign = TextAlign.Center // Ortaya hizala
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(usedWords) { word ->
+                        Text(
+                            text = word,
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                IconButton(
+                    onClick = onAddClick,
+                    modifier = Modifier
+                        .size(35.dp)
+                        .align(Alignment.BottomStart) // Sol alt köşeye hizalama
+                        .background(LightOrange, shape = CircleShape)
+                        .padding(bottom = 2.dp, start = 2.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Story",
+                        tint = Color.Black,
                     )
                 }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            IconButton(
-                onClick = onAddClick,
-                modifier = Modifier
-                    .size(35.dp)
-                    .align(Alignment.BottomEnd) // Sağ alt köşeye hizalama
-                    .background( LightOrange, shape = CircleShape)
-                    .padding(bottom = 2.dp),
-
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Story",
-                    tint = Color.Black,
-
-                )
             }
         }
     }
