@@ -6,8 +6,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.englishnotebook.ui.screens.AddStoryScreen
 import com.example.englishnotebook.ui.screens.DetailScreen
 import com.example.englishnotebook.ui.screens.FeedScreen
@@ -30,7 +32,6 @@ fun Router(navController: NavHostController, authViewModel: AuthViewModel = hilt
     NavHost(navController = navController, startDestination = startDestination) {
         composable("feed") { FeedScreen(navController) }
         composable("detail") { DetailScreen(navController) }
-        composable("addstory") { AddStoryScreen(navController) }
         composable("signup") {
             val signUpViewModel = hiltViewModel<SignUpViewModel>()
             SignUpScreen(navController, signUpViewModel)
@@ -41,5 +42,11 @@ fun Router(navController: NavHostController, authViewModel: AuthViewModel = hilt
         }
         composable("profile") { ProfileScreen(navController) }
         composable("welcome") { WelcomeScreen(navController) }
+
+        composable("addstory/{words}", arguments = listOf(navArgument("words") { type = NavType.StringType })) { backStackEntry ->
+            val words = backStackEntry.arguments?.getString("words")?.split(",") ?: emptyList()
+            AddStoryScreen(navController = navController, words = words)
+        }
+
     }
 }

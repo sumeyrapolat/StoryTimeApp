@@ -28,47 +28,46 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.englishnotebook.ui.theme.Blue
+import com.example.englishnotebook.ui.theme.DarkGreen
 import com.example.englishnotebook.ui.theme.LightBlue
 import com.example.englishnotebook.ui.theme.LightOrange
 import com.example.englishnotebook.ui.theme.LightPurple
+import com.example.englishnotebook.ui.theme.LightYellow
+import com.example.englishnotebook.ui.theme.Orange
 import com.example.englishnotebook.ui.theme.PastelPink
 import com.example.englishnotebook.ui.theme.PastelYellow
 import com.example.englishnotebook.ui.theme.Pink
 import com.example.englishnotebook.ui.theme.Purple
 import com.example.englishnotebook.ui.theme.SoftBlue
+import com.example.englishnotebook.ui.theme.SoftGreen
+import com.example.englishnotebook.ui.theme.SoftPink
 
 @Composable
-fun AddStoryScreen(navController: NavController) {
+fun AddStoryScreen(navController: NavController, words: List<String>) {
     var title by remember { mutableStateOf(TextFieldValue("")) }
     var storyContent by remember { mutableStateOf(TextFieldValue("")) }
 
     val backgroundGradient = Brush.linearGradient(
         colors = listOf(
-            SoftBlue,
             LightPurple,
-            PastelPink,
-            LightPurple,
+            SoftPink,
+            LightYellow,
             SoftBlue
         ),
         start = Offset(0f, 0f),
-        end = Offset( Float.POSITIVE_INFINITY,0f),
+        end = Offset(Float.POSITIVE_INFINITY, 0f),
         tileMode = TileMode.Clamp
     )
 
     val buttonBackgroundGradient = Brush.linearGradient(
         colors = listOf(
-            SoftBlue,
-            PastelPink,
-            SoftBlue
+            LightPurple,
+            SoftPink,
+            LightYellow,
         ),
         start = Offset(0f, 0f),
-        end = Offset( Float.POSITIVE_INFINITY,0f),
+        end = Offset(Float.POSITIVE_INFINITY, 0f),
         tileMode = TileMode.Clamp
-    )
-
-    val usedWords = listOf(
-        "abandon", "keen", "jealous", "tact", "oath", "vacant",
-        "hardship", "gallant", "data", "unaccustomed", "bachelor", "qualify"
     )
 
     Column(
@@ -82,6 +81,7 @@ fun AddStoryScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp),
+            border = BorderStroke(2.dp, backgroundGradient),
             shape = RoundedCornerShape(25.dp),
         ) {
             Box(
@@ -92,15 +92,16 @@ fun AddStoryScreen(navController: NavController) {
                 LazyRow(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(start = 8.dp , end = 8.dp),
+                        .padding(start = 8.dp, end = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(usedWords) { word ->
+                    items(words) { word ->
                         Text(
                             text = word,
                             color = Color.Black,
                             fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(horizontal = 8.dp)
                         )
@@ -109,13 +110,12 @@ fun AddStoryScreen(navController: NavController) {
             }
         }
 
-
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
             shape = RoundedCornerShape(10.dp),
-            border = BorderStroke(1.dp, PastelPink),
+            border = BorderStroke(2.dp, backgroundGradient),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White
             )
@@ -199,7 +199,7 @@ fun AddStoryScreen(navController: NavController) {
                         shape = RoundedCornerShape(45.dp),
                         modifier = Modifier
                             .wrapContentWidth()
-                            .background(buttonBackgroundGradient , shape = RoundedCornerShape(45.dp)) // Gradient arka planı doğrudan butona uyguluyoruz
+                            .background(buttonBackgroundGradient, shape = RoundedCornerShape(45.dp)) // Gradient arka planı doğrudan butona uyguluyoruz
                     ) {
                         Text(
                             text = "Save Story",
@@ -209,7 +209,6 @@ fun AddStoryScreen(navController: NavController) {
                         )
                     }
                 }
-
             }
         }
     }

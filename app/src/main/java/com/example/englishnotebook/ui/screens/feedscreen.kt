@@ -102,7 +102,7 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
                     ) {
                         items(words) { wordsGroup ->
                             WordsCard(usedWords = wordsGroup, onAddClick = {
-                                navController.navigate("addstory")
+                                navController.navigate("addstory/${wordsGroup.joinToString(",")}")
                             })
                         }
                     }
