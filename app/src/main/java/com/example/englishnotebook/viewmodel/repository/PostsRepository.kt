@@ -13,7 +13,7 @@ class PostsRepository @Inject constructor(
     suspend fun addPost(post: Post, userId: String): Result<Unit> {
         return try {
             db.collection("Posts")
-                .document(userId)
+                .document("PostDoc")
                 .collection("UserPosts")
                 .add(post)
                 .await()
@@ -22,11 +22,10 @@ class PostsRepository @Inject constructor(
             Result.failure(e)
         }
     }
-
-    suspend fun getPostsByUserId(userId: String): Result<List<Post>> {
+    suspend fun getAllPosts(): Result<List<Post>> {
         return try {
             val documents = db.collection("Posts")
-                .document(userId)
+                .document("PostDoc")
                 .collection("UserPosts")
                 .get()
                 .await()
@@ -38,7 +37,7 @@ class PostsRepository @Inject constructor(
         }
     }
 
-    suspend fun getUserProfile(userId: String): Result<User> {
+        suspend fun getUserProfile(userId: String): Result<User> {
         return try {
             val document = db.collection("Users")
                 .document(userId)

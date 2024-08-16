@@ -12,6 +12,8 @@ import com.example.englishnotebook.viewmodel.repository.WordsRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.opencsv.CSVReader
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -40,20 +42,18 @@ class FeedViewModel @Inject constructor(
         fetchStoriesFromFirestore()
     }
 
+
     fun fetchStoriesFromFirestore() {
         viewModelScope.launch {
-            val currentUser = auth.currentUser
-            if (currentUser != null) {
-                val userId = currentUser.uid
-                val postsResult = postsRepository.getPostsByUserId(userId)
-                val userProfileResult = postsRepository.getUserProfile(userId)
+            val postsResult = postsRepository.getAllPosts()
+            if (postsResult.isSuccess) {
+                val posts = postsResult.getOrNull().orEmpty()
 
-                if (postsResult.isSuccess && userProfileResult.isSuccess) {
-                    val posts = postsResult.getOrNull().orEmpty()
-                    val userProfile = userProfileResult.getOrNull()
-
-                    if (userProfile != null) {
-                        val stories = posts.map { post ->
+                // Tüm kullanıcı profillerini asenkron olarak çekeriz.
+                val stories = posts.map { post ->
+                    async {
+                        val userProfileResult = postsRepository.getUserProfile(post.userId)
+                        userProfileResult.getOrNull()?.let { userProfile ->
                             Story(
                                 userPhoto = userProfile.profilePhotoUrl ?: "",
                                 userName = "${userProfile.firstName} ${userProfile.lastName}",
@@ -64,11 +64,12 @@ class FeedViewModel @Inject constructor(
                                 userEmail = userProfile.email
                             )
                         }
-                        _stories.value = stories
                     }
-                } else {
-                    Log.e("FeedViewModel", "Error fetching stories or user profile")
-                }
+                }.awaitAll().filterNotNull() // Null olanları filtrele
+
+                _stories.value = stories
+            } else {
+                Log.e("FeedViewModel", "Error fetching stories")
             }
         }
     }
@@ -114,6 +115,7 @@ class FeedViewModel @Inject constructor(
         }
 
         val post = Post(
+            userId = currentUser.uid,
             title = title,
             content = content,
             usedWords = usedWords
