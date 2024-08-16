@@ -90,3 +90,27 @@ val drawerGradientColor = Brush.linearGradient(
     end = Offset( 0f,Float.POSITIVE_INFINITY),
     tileMode = TileMode.Clamp
 )
+
+
+val addStoryCardColor = Brush.linearGradient(
+    colors = listOf(
+        LightPurple,
+        SoftPink,
+        LightYellow,
+        SoftBlue
+    ),
+    start = Offset(0f, 0f),
+    end = Offset(Float.POSITIVE_INFINITY, 0f),
+    tileMode = TileMode.Clamp
+)
+
+val addStoryButtonColor = Brush.linearGradient(
+    colors = listOf(
+        LightPurple,
+        SoftPink,
+        LightYellow,
+    ),
+    start = Offset(0f, 0f),
+    end = Offset(Float.POSITIVE_INFINITY, 0f),
+    tileMode = TileMode.Clamp
+)

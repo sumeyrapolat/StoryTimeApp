@@ -42,6 +42,8 @@ import com.example.englishnotebook.ui.theme.Purple
 import com.example.englishnotebook.ui.theme.SoftBlue
 import com.example.englishnotebook.ui.theme.SoftGreen
 import com.example.englishnotebook.ui.theme.SoftPink
+import com.example.englishnotebook.ui.theme.addStoryButtonColor
+import com.example.englishnotebook.ui.theme.addStoryCardColor
 import com.example.englishnotebook.viewmodel.FeedViewModel
 
 @Composable
@@ -51,28 +53,10 @@ fun AddStoryScreen(navController: NavController, words: List<String>, viewModel:
 
     val postState by viewModel.postState.collectAsState()
 
-    val backgroundGradient = Brush.linearGradient(
-        colors = listOf(
-            LightPurple,
-            SoftPink,
-            LightYellow,
-            SoftBlue
-        ),
-        start = Offset(0f, 0f),
-        end = Offset(Float.POSITIVE_INFINITY, 0f),
-        tileMode = TileMode.Clamp
-    )
 
-    val buttonBackgroundGradient = Brush.linearGradient(
-        colors = listOf(
-            LightPurple,
-            SoftPink,
-            LightYellow,
-        ),
-        start = Offset(0f, 0f),
-        end = Offset(Float.POSITIVE_INFINITY, 0f),
-        tileMode = TileMode.Clamp
-    )
+    LaunchedEffect(Unit) {
+        viewModel.resetState() // Ekran açıldığında state'i sıfırla
+    }
 
     Column(
         modifier = Modifier
@@ -85,13 +69,13 @@ fun AddStoryScreen(navController: NavController, words: List<String>, viewModel:
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp),
-            border = BorderStroke(2.dp, backgroundGradient),
+            border = BorderStroke(2.dp, addStoryCardColor),
             shape = RoundedCornerShape(25.dp),
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(backgroundGradient)
+                    .background(addStoryCardColor)
             ) {
                 LazyRow(
                     modifier = Modifier
@@ -119,7 +103,7 @@ fun AddStoryScreen(navController: NavController, words: List<String>, viewModel:
                 .fillMaxWidth()
                 .weight(1f),
             shape = RoundedCornerShape(10.dp),
-            border = BorderStroke(2.dp, backgroundGradient),
+            border = BorderStroke(2.dp, addStoryCardColor),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White
             )
@@ -200,6 +184,7 @@ fun AddStoryScreen(navController: NavController, words: List<String>, viewModel:
                                 storyContent.text,
                                 words
                             )
+                            navController.navigate("feed")
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent
@@ -207,7 +192,7 @@ fun AddStoryScreen(navController: NavController, words: List<String>, viewModel:
                         shape = RoundedCornerShape(45.dp),
                         modifier = Modifier
                             .wrapContentWidth()
-                            .background(buttonBackgroundGradient, shape = RoundedCornerShape(45.dp))
+                            .background( addStoryButtonColor, shape = RoundedCornerShape(45.dp))
                     ) {
                         Text(
                             text = "Save Story",
@@ -224,8 +209,7 @@ fun AddStoryScreen(navController: NavController, words: List<String>, viewModel:
     LaunchedEffect(postState) {
         when (postState) {
             is FeedViewModel.PostState.Success -> {
-                viewModel.resetState()
-                navController.navigate("feed")
+                viewModel.resetState() // Önce state'i sıfırla
             }
             is FeedViewModel.PostState.Error -> {
                 // Hata mesajı göstermek için Snackbar veya başka bir UI bileşeni ekleyebilirsiniz
@@ -233,4 +217,5 @@ fun AddStoryScreen(navController: NavController, words: List<String>, viewModel:
             else -> Unit
         }
     }
+
 }
