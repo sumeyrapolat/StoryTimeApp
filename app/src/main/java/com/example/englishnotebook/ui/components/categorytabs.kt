@@ -42,23 +42,13 @@ import com.example.englishnotebook.ui.theme.SoftBlue
 import com.example.englishnotebook.ui.theme.SoftGreen
 import com.example.englishnotebook.ui.theme.SoftPink
 import com.example.englishnotebook.ui.theme.SoftPurple
+import com.example.englishnotebook.ui.theme.categoryGradientColor
 
 @Composable
 fun CategoryTabs(onCategorySelected: (String) -> Unit) {
     val categories = listOf("Stories", "Words")
     var selectedCategory by remember { mutableStateOf(0) }
 
-    val backgroundGradient = Brush.linearGradient(
-        colors = listOf(
-            SoftGreen,
-            PastelPink,
-            Pink,
-            PastelPink, SoftGreen
-        ),
-        start = Offset(0f, 0f),
-        end = Offset( Float.POSITIVE_INFINITY,0f),
-        tileMode = TileMode.Clamp
-    )
 
     Column(
         modifier = Modifier
@@ -101,7 +91,7 @@ fun CategoryTabs(onCategorySelected: (String) -> Unit) {
                         .clip(RoundedCornerShape(20.dp))
                         .then(
                             if (selectedCategory == index) {
-                                Modifier.background(backgroundGradient) // Gradient arka plan
+                                Modifier.background(categoryGradientColor) // Gradient arka plan
                             } else {
                                 Modifier.background(Color.Transparent) // Seçili değilse transparan
                             }

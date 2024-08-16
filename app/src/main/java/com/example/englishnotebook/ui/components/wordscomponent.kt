@@ -31,24 +31,10 @@ import com.example.englishnotebook.ui.theme.PastelYellow
 import com.example.englishnotebook.ui.theme.Pink
 import com.example.englishnotebook.ui.theme.SoftBlue
 import com.example.englishnotebook.ui.theme.SoftGreen
+import com.example.englishnotebook.ui.theme.cardGradientColor
 
 @Composable
 fun WordsCard(usedWords: List<String>, onAddClick: () -> Unit) {
-
-    val backgroundGradient = Brush.linearGradient(
-        colors = listOf(
-            Pink,
-            PastelPink,
-            SoftGreen,
-            PastelPink,
-            Pink
-        ),
-        start = Offset(0f, 0f),
-        end = Offset(Float.POSITIVE_INFINITY, 0f),
-        tileMode = TileMode.Clamp
-    )
-
-
 
     Box(
         modifier = Modifier
@@ -69,7 +55,7 @@ fun WordsCard(usedWords: List<String>, onAddClick: () -> Unit) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(backgroundGradient)
+                    .background(cardGradientColor)
             )
         }
 
@@ -77,7 +63,7 @@ fun WordsCard(usedWords: List<String>, onAddClick: () -> Unit) {
         Card(
             modifier = Modifier
                 .matchParentSize()
-                .border(2.dp, backgroundGradient, shape = RoundedCornerShape(10.dp)),
+                .border(2.dp, cardGradientColor , shape = RoundedCornerShape(10.dp)),
             shape = RoundedCornerShape(10.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White

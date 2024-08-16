@@ -22,9 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import com.example.englishnotebook.ui.theme.PastelPink
-import com.example.englishnotebook.ui.theme.Pink
-import com.example.englishnotebook.ui.theme.SoftGreen
+import com.example.englishnotebook.ui.theme.cardGradientColor
 
 @Composable
 fun StoryCard(
@@ -34,24 +32,12 @@ fun StoryCard(
     storyContent: String,
     usedWords: List<String>
 ) {
-    val backgroundGradient = Brush.linearGradient(
-        colors = listOf(
-            Pink,
-            PastelPink,
-            SoftGreen,
-            PastelPink,
-            Pink
-        ),
-        start = Offset(0f, 0f),
-        end = Offset(Float.POSITIVE_INFINITY, 0f),
-        tileMode = TileMode.Clamp
-    )
 
     Card(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
-            .border(2.dp, backgroundGradient, shape = RoundedCornerShape(10.dp)),
+            .border(2.dp, cardGradientColor , shape = RoundedCornerShape(10.dp)),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent // Transparent yaparak arka planın gradient olmasını sağlıyoruz

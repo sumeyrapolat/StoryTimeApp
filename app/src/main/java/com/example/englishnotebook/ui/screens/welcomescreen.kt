@@ -37,7 +37,7 @@ fun WelcomeScreen(navController: NavController) {
     val screenWidth = displayMetrics.widthPixels.toFloat()
     val screenHeight = displayMetrics.heightPixels.toFloat()
 
-    val backgroundGradient = Brush.linearGradient(
+    val welcomeGradient = Brush.linearGradient(
         colors = listOf(
             LightPurple,
             PastelPink,
@@ -66,7 +66,7 @@ fun WelcomeScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundGradient)
+            .background(welcomeGradient)
     ) {
         Box(
             modifier = Modifier

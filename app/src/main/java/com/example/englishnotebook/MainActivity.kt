@@ -37,6 +37,8 @@ import com.example.englishnotebook.ui.theme.Pink
 import com.example.englishnotebook.ui.theme.SoftGreen
 import com.example.englishnotebook.ui.theme.SoftPink
 import com.example.englishnotebook.ui.theme.SoftPurple
+import com.example.englishnotebook.ui.theme.bottomGradient
+import com.example.englishnotebook.ui.theme.drawerGradientColor
 import com.example.englishnotebook.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -66,31 +68,6 @@ fun MyApp(viewModel: AuthViewModel = hiltViewModel()) {
     val displayMetrics = context.resources.displayMetrics
     val screenWidth = displayMetrics.widthPixels.toFloat()
 
-    val backgroundGradient = Brush.linearGradient(
-        colors = listOf(
-            Pink,
-            PastelPink,
-            SoftGreen,
-            PastelPink,
-            Pink
-        ),
-        start = Offset(0f, 0f),
-        end = Offset( 0f,Float.POSITIVE_INFINITY),
-        tileMode = TileMode.Clamp
-    )
-
-    val bottomGradient = Brush.linearGradient(
-        colors = listOf(
-            Pink,
-            PastelPink,
-            SoftGreen,
-            PastelPink,
-            Pink
-        ),
-        start = Offset(0f, 0f),
-        end = Offset( Float.POSITIVE_INFINITY,0f),
-        tileMode = TileMode.Clamp
-    )
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -102,7 +79,7 @@ fun MyApp(viewModel: AuthViewModel = hiltViewModel()) {
                         modifier = Modifier
                             .fillMaxHeight()
                             .width(300.dp)
-                            .background(backgroundGradient, shape = RoundedCornerShape(topEnd = 26.dp, bottomEnd = 26.dp)),
+                            .background(drawerGradientColor, shape = RoundedCornerShape(topEnd = 26.dp, bottomEnd = 26.dp)),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
