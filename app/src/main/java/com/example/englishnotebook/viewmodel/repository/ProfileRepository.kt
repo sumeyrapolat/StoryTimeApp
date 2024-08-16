@@ -6,23 +6,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-
-class PostsRepository @Inject constructor(
+class ProfileRepository @Inject constructor(
     private val db: FirebaseFirestore
 ) {
-    suspend fun addPost(post: Post, userId: String): Result<Unit> {
-        return try {
-            db.collection("Posts")
-                .document(userId)
-                .collection("UserPosts")
-                .add(post)
-                .await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
 
+    // Kullanıcının gönderilerini alır
     suspend fun getPostsByUserId(userId: String): Result<List<Post>> {
         return try {
             val documents = db.collection("Posts")
@@ -38,6 +26,7 @@ class PostsRepository @Inject constructor(
         }
     }
 
+    // Kullanıcının profil bilgilerini alır
     suspend fun getUserProfile(userId: String): Result<User> {
         return try {
             val document = db.collection("Users")

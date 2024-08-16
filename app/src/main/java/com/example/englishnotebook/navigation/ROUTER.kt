@@ -18,11 +18,12 @@ import com.example.englishnotebook.ui.screens.SignInScreen
 import com.example.englishnotebook.ui.screens.SignUpScreen
 import com.example.englishnotebook.ui.screens.WelcomeScreen
 import com.example.englishnotebook.viewmodel.AuthViewModel
+import com.example.englishnotebook.viewmodel.ProfileViewModel
 import com.example.englishnotebook.viewmodel.SignInViewModel
 import com.example.englishnotebook.viewmodel.SignUpViewModel
 
 @Composable
-fun Router(navController: NavHostController, authViewModel: AuthViewModel = hiltViewModel()) {
+fun Router(navController: NavHostController, authViewModel: AuthViewModel = hiltViewModel(), profileViewModel: ProfileViewModel = hiltViewModel()) {
 
     val userLoggedIn by authViewModel.userLoggedInState.collectAsState()
 
@@ -40,7 +41,7 @@ fun Router(navController: NavHostController, authViewModel: AuthViewModel = hilt
             val signInViewModel = hiltViewModel<SignInViewModel>()
             SignInScreen(navController, signInViewModel)
         }
-        composable("profile") { ProfileScreen(navController) }
+        composable("profile") { ProfileScreen(profileViewModel) }
         composable("welcome") { WelcomeScreen(navController) }
 
         composable("addstory/{words}", arguments = listOf(navArgument("words") { type = NavType.StringType })) { backStackEntry ->
