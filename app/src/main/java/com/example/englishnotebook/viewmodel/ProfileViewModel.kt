@@ -1,6 +1,5 @@
 package com.example.englishnotebook.viewmodel
 
-
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,12 +43,21 @@ class ProfileViewModel @Inject constructor(
                 val postsResult = profileRepository.getPostsByUserId(userId)
                 val userProfileResult = profileRepository.getUserProfile(userId)
 
+                // Hata mesajlarını daha detaylı loglamak için
+                if (postsResult.isFailure || userProfileResult.isFailure) {
+                    val postError = postsResult.exceptionOrNull()?.message ?: "Unknown post error"
+                    val profileError = userProfileResult.exceptionOrNull()?.message ?: "Unknown profile error"
+                    _postState.value = PostState.Error("Error fetching stories or user profile: Post Error: $postError, Profile Error: $profileError")
+                    Log.e("ProfileViewModel", "Error fetching stories or user profile: Post Error: $postError, Profile Error: $profileError")
+                    return@launch
+                }
+
                 if (postsResult.isSuccess && userProfileResult.isSuccess) {
                     val posts = postsResult.getOrNull().orEmpty()
                     val userProfile = userProfileResult.getOrNull()
 
-                    Log.d("ProfileViewModel", "Fetched posts: $posts") // Burada postları logluyoruz
-                    Log.d("ProfileViewModel", "Fetched user profile: $userProfile") // Profil logu
+                    Log.d("ProfileViewModel", "Fetched posts: $posts")
+                    Log.d("ProfileViewModel", "Fetched user profile: $userProfile")
 
                     if (userProfile != null) {
                         val stories = posts.map { post ->
@@ -67,14 +75,10 @@ class ProfileViewModel @Inject constructor(
                         _userProfile.value = userProfile
                         _postState.value = PostState.Success
                     }
-                } else {
-                    _postState.value = PostState.Error("Error fetching stories or user profile")
-                    Log.e("ProfileViewModel", "Error fetching stories or user profile")
                 }
             }
         }
     }
-
 
     sealed class PostState {
         object Idle : PostState()

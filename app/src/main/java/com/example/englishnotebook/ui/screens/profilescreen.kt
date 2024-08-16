@@ -45,7 +45,6 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
 
     var selectedPost by remember { mutableStateOf<Story?>(null) }
 
-
     val backgroundGradient = Brush.linearGradient(
         colors = listOf(
             LightPurple,
@@ -57,6 +56,9 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
         tileMode = TileMode.Clamp
     )
 
+    LaunchedEffect(Unit) {
+        viewModel.fetchUserProfileAndPosts()
+    }
 
     Column(
         modifier = Modifier

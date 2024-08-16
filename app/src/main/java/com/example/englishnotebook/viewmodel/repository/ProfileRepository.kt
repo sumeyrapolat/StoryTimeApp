@@ -14,8 +14,9 @@ class ProfileRepository @Inject constructor(
     suspend fun getPostsByUserId(userId: String): Result<List<Post>> {
         return try {
             val documents = db.collection("Posts")
-                .document(userId)
+                .document("PostDoc")
                 .collection("UserPosts")
+                .whereEqualTo("userId", userId)
                 .get()
                 .await()
 
