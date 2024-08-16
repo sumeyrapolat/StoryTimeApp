@@ -3,6 +3,7 @@ package com.example.englishnotebook.viewmodel.repository
 import com.example.englishnotebook.model.Post
 import com.example.englishnotebook.model.User
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -27,6 +28,7 @@ class PostsRepository @Inject constructor(
             val documents = db.collection("Posts")
                 .document("PostDoc")
                 .collection("UserPosts")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
                 .await()
 

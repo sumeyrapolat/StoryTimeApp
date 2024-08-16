@@ -33,11 +33,14 @@ import com.example.englishnotebook.ui.components.WordsCard
 import com.example.englishnotebook.viewmodel.AuthViewModel
 import com.example.englishnotebook.viewmodel.FeedViewModel
 import com.example.englishnotebook.model.Story
+
+
 @Composable
 fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hiltViewModel(), viewModel: FeedViewModel = hiltViewModel()) {
 
     val words by viewModel.words.collectAsState()
     val stories by viewModel.stories.collectAsState()
+    val postState by viewModel.postState.collectAsState()
 
     var selectedCategory by remember { mutableStateOf("Stories") }
     val userLoggedIn by authViewModel.userLoggedInState.collectAsState()
@@ -67,54 +70,82 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
                 Log.d("FeedScreen", "Seçilen kategori: $category")
             })
 
-            when (selectedCategory) {
-                "Stories" -> {
-                    if (stories.isEmpty()) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Henüz bir hikaye eklenmedi.",
-                                color = Color.Gray,
-                                fontSize = 18.sp
-                            )
+            when (postState) {
+                is FeedViewModel.PostState.Loading -> {
+                    // Yükleme sırasında CircularProgressIndicator göster
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+                is FeedViewModel.PostState.Success -> {
+                    when (selectedCategory) {
+                        "Stories" -> {
+                            if (stories.isEmpty()) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Henüz bir hikaye eklenmedi.",
+                                        color = Color.Gray,
+                                        fontSize = 18.sp
+                                    )
+                                }
+                            } else {
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    items(stories) { story ->
+                                        StoryCard(
+                                            userPhoto = story.userPhoto,
+                                            userName = story.userName,
+                                            storyTitle = story.title,
+                                            storyContent = story.content,
+                                            usedWords = story.usedWords
+                                        )
+                                    }
+                                }
+                            }
                         }
-                    } else {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            items(stories) { story ->
-                                StoryCard(
-                                    userPhoto = story.userPhoto,
-                                    userName = story.userName,
-                                    storyTitle = story.title,
-                                    storyContent = story.content,
-                                    usedWords = story.usedWords
-                                )
+                        "Words" -> {
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(2),
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(words) { wordsGroup ->
+                                    WordsCard(usedWords = wordsGroup, onAddClick = {
+                                        navController.navigate("addstory/${wordsGroup.joinToString(",")}")
+                                    })
+                                }
                             }
                         }
                     }
                 }
-                "Words" -> {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(words) { wordsGroup ->
-                            WordsCard(usedWords = wordsGroup, onAddClick = {
-                                navController.navigate("addstory/${wordsGroup.joinToString(",")}")
-                            })
-                        }
+                is FeedViewModel.PostState.Error -> {
+                    // Hata durumu için bir mesaj göster
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "Bir hata oluştu: ${(postState as FeedViewModel.PostState.Error).errorMessage}",
+                            color = Color.Red,
+                            fontSize = 18.sp
+                        )
                     }
+                }
+                else -> {
+                    // Başka durumlar için gerekli işlemleri burada tanımlayabilirsiniz
                 }
             }
         }
     } else {
-        CircularProgressIndicator() // Kullanıcı giriş yapmadığında veya yükleme sırasında göstermek için
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
     }
 }
 

@@ -45,6 +45,8 @@ class FeedViewModel @Inject constructor(
 
     fun fetchStoriesFromFirestore() {
         viewModelScope.launch {
+            _postState.value = PostState.Loading // Verileri yüklemeye başladığımızda Loading durumuna geçiyoruz
+
             val postsResult = postsRepository.getAllPosts()
             if (postsResult.isSuccess) {
                 val posts = postsResult.getOrNull().orEmpty()
@@ -68,8 +70,9 @@ class FeedViewModel @Inject constructor(
                 }.awaitAll().filterNotNull() // Null olanları filtrele
 
                 _stories.value = stories
+                _postState.value = PostState.Success // Veri yüklendiğinde Success durumuna geçiyoruz
             } else {
-                Log.e("FeedViewModel", "Error fetching stories")
+                _postState.value = PostState.Error("Error fetching stories")
             }
         }
     }

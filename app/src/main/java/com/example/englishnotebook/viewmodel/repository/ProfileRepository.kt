@@ -3,6 +3,7 @@ package com.example.englishnotebook.viewmodel.repository
 import com.example.englishnotebook.model.Post
 import com.example.englishnotebook.model.User
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -10,7 +11,6 @@ class ProfileRepository @Inject constructor(
     private val db: FirebaseFirestore
 ) {
 
-    // Kullanıcının gönderilerini alır
     suspend fun getPostsByUserId(userId: String): Result<List<Post>> {
         return try {
             val documents = db.collection("Posts")
@@ -21,7 +21,8 @@ class ProfileRepository @Inject constructor(
                 .await()
 
             val posts = documents.mapNotNull { it.toObject(Post::class.java) }
-            Result.success(posts)
+            val sortedPosts = posts.sortedByDescending { it.timestamp } // Uygulama içinde sıralama
+            Result.success(sortedPosts)
         } catch (e: Exception) {
             Result.failure(e)
         }
