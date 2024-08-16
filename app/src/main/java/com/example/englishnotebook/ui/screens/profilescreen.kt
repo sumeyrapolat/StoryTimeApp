@@ -202,7 +202,7 @@ fun PostDetailDialog(post: Story, onDismiss: () -> Unit) {
                     text = "Close",
                     fontSize = 16.sp,
                     color = Pink,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
 
                 )
             }
