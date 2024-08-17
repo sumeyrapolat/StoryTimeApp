@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -88,7 +90,7 @@ fun StoryCard(
                 text = storyContent,
                 fontSize = 16.sp,
                 color = Color.Black,
-                maxLines = 8,
+                maxLines = 6,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
@@ -96,7 +98,7 @@ fun StoryCard(
                 text = usedWords.joinToString(", "),
                 fontSize = 16.sp,
                 color = Color.Gray,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
@@ -109,9 +111,11 @@ fun StoryCard(
                 Text(text = storyTitle, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
             },
             text = {
-                Column {
-                    Text(text = storyContent, fontSize = 16.sp, color = Color.Black)
-                    Spacer(modifier = Modifier.height(8.dp))
+                LazyColumn(modifier = Modifier.fillMaxHeight(0.8f)) { // Yüksekliği sınırlandırabilirsiniz
+                    item {
+                        Text(text = storyContent, fontSize = 16.sp, color = Color.Black)
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
             },
             confirmButton = {

@@ -26,22 +26,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.englishnotebook.ui.theme.Blue
-import com.example.englishnotebook.ui.theme.DarkGreen
-import com.example.englishnotebook.ui.theme.LightBlue
-import com.example.englishnotebook.ui.theme.LightOrange
-import com.example.englishnotebook.ui.theme.LightPurple
-import com.example.englishnotebook.ui.theme.LightYellow
+import com.example.englishnotebook.ui.theme.MediumPurple
 import com.example.englishnotebook.ui.theme.Orange
-import com.example.englishnotebook.ui.theme.PastelPink
-import com.example.englishnotebook.ui.theme.PastelPurple
-import com.example.englishnotebook.ui.theme.PastelYellow
-import com.example.englishnotebook.ui.theme.Pink
-import com.example.englishnotebook.ui.theme.Purple
-import com.example.englishnotebook.ui.theme.SoftBlue
-import com.example.englishnotebook.ui.theme.SoftGreen
-import com.example.englishnotebook.ui.theme.SoftPink
-import com.example.englishnotebook.ui.theme.SoftPurple
 import com.example.englishnotebook.ui.theme.categoryGradientColor
 
 @Composable
@@ -64,7 +50,7 @@ fun CategoryTabs(onCategorySelected: (String) -> Unit) {
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
                     Modifier.tabIndicatorOffset(tabPositions[selectedCategory]),
-                    color = Orange // Seçili kategori için gösterge rengi
+                    color = MediumPurple // Seçili kategori için gösterge rengi
                 )
             }
         ) {

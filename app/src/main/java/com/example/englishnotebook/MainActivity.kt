@@ -1,6 +1,7 @@
 package com.example.englishnotebook
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -30,13 +31,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.englishnotebook.navigation.Router
 import com.example.englishnotebook.ui.components.DrawerContent
 import com.example.englishnotebook.ui.theme.EnglishnotebookTheme
-import com.example.englishnotebook.ui.theme.LightOrange
-import com.example.englishnotebook.ui.theme.LightPurple
-import com.example.englishnotebook.ui.theme.PastelPink
-import com.example.englishnotebook.ui.theme.Pink
-import com.example.englishnotebook.ui.theme.SoftGreen
-import com.example.englishnotebook.ui.theme.SoftPink
-import com.example.englishnotebook.ui.theme.SoftPurple
 import com.example.englishnotebook.ui.theme.bottomGradient
 import com.example.englishnotebook.ui.theme.drawerGradientColor
 import com.example.englishnotebook.viewmodel.AuthViewModel
@@ -92,9 +86,9 @@ fun MyApp(viewModel: AuthViewModel = hiltViewModel()) {
     ) {
         Scaffold(
             topBar = {
-                if (currentDestination == "feed" || currentDestination == "profile" || currentDestination == "addstory") {
+                if (currentDestination == "feed" || currentDestination == "profile") {
                     TopAppBar(
-                        title = { Text("My App", fontSize = 22.sp) },
+                        title = { Text("Story Time", fontSize = 20.sp) },
                         navigationIcon = {
                             IconButton(onClick = { scope.launch { drawerState.open() } }) {
                                 Icon(Icons.Filled.Menu, contentDescription = "Menu", Modifier.size(22.dp))
@@ -105,7 +99,8 @@ fun MyApp(viewModel: AuthViewModel = hiltViewModel()) {
 
             },
             bottomBar = {
-                if (currentDestination == "feed" || currentDestination == "profile" || currentDestination == "addstory") {
+                if (currentDestination?.startsWith("addstory") == true || currentDestination == "feed" || currentDestination == "profile") {
+                    Log.d("Current Destination", "Current destination is: $currentDestination")
                     Surface(
                         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                     ) {

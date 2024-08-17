@@ -39,6 +39,7 @@ import com.example.englishnotebook.ui.theme.DarkerSoftBlue
 import com.example.englishnotebook.ui.theme.LightBlue
 import com.example.englishnotebook.ui.theme.LightPastelPink
 import com.example.englishnotebook.ui.theme.LightPurple
+import com.example.englishnotebook.ui.theme.MediumBlue
 import com.example.englishnotebook.ui.theme.PastelPink
 import com.example.englishnotebook.ui.theme.PastelYellow
 import com.example.englishnotebook.ui.theme.Pink
@@ -237,7 +238,7 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
                             .background(
                                 Brush.linearGradient(
                                     colors = listOf(  DarkerPastelPink,
-                                        DarkerSoftBlue,
+                                        MediumBlue.copy(alpha = 0.6f),
                                         DarkerPastelPink),
                                     start = Offset(0f, 0f),
                                     end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)

@@ -25,13 +25,16 @@ import com.example.englishnotebook.ui.theme.LightBlue
 import com.example.englishnotebook.ui.theme.LightOrange
 import com.example.englishnotebook.ui.theme.LightPurple
 import com.example.englishnotebook.ui.theme.LightYellow
+import com.example.englishnotebook.ui.theme.MediumPink
 import com.example.englishnotebook.ui.theme.Orange
 import com.example.englishnotebook.ui.theme.PastelPink
 import com.example.englishnotebook.ui.theme.PastelYellow
 import com.example.englishnotebook.ui.theme.Pink
 import com.example.englishnotebook.ui.theme.SoftBlue
 import com.example.englishnotebook.ui.theme.SoftGreen
+import com.example.englishnotebook.ui.theme.backCarGradientColor
 import com.example.englishnotebook.ui.theme.cardGradientColor
+import com.example.englishnotebook.ui.theme.wordCardGradientColor
 
 @Composable
 fun WordsCard(usedWords: List<String>, onAddClick: () -> Unit) {
@@ -55,7 +58,7 @@ fun WordsCard(usedWords: List<String>, onAddClick: () -> Unit) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(cardGradientColor)
+                    .background(backCarGradientColor)
             )
         }
 
@@ -63,7 +66,7 @@ fun WordsCard(usedWords: List<String>, onAddClick: () -> Unit) {
         Card(
             modifier = Modifier
                 .matchParentSize()
-                .border(2.dp, cardGradientColor , shape = RoundedCornerShape(10.dp)),
+                .border(2.dp, wordCardGradientColor , shape = RoundedCornerShape(10.dp)),
             shape = RoundedCornerShape(10.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White
@@ -99,7 +102,7 @@ fun WordsCard(usedWords: List<String>, onAddClick: () -> Unit) {
                     modifier = Modifier
                         .size(35.dp)
                         .align(Alignment.BottomStart) // Sol alt köşeye hizalama
-                        .background(LightOrange, shape = CircleShape)
+                        .background(PastelPink, shape = CircleShape)
                         .padding(bottom = 2.dp, start = 2.dp),
                 ) {
                     Icon(

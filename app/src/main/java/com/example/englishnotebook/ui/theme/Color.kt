@@ -7,82 +7,91 @@ import androidx.compose.ui.graphics.TileMode
 
 //application colors
 val Pink =Color(0xFFED7299)
-val NewPink = Color(0xFFE95D8a)
 val PastelYellow = Color(0xFFF1FDB0)
 val Orange =  Color(0xFFF6CA52)
 val LightYellow = Color(0xFFFFFFDF)
 val White = Color(0xFFFFFFFF)
 
-val SoftPurple = Color(0xFFB799DA) // Yumuşak Mor
-val PastelPurple = Color(0xFFDFB0FF) // Pastel Mor
-val CoolBlue = Color(0xFF9EDDEF) // Serin ve sakin bir mavi tonu, genel kullanım için ideal.
-val LavenderPurple = Color(0xFFE0B0FF) // Yumuşak ve zarif bir mor tonu, uygulamada sıcaklık ve modernlik katar.
-val raspberry = Color(0xFFE30B5C)
 val SoftPink = Color(0xFFFFB8E1)
 
-//font colors
-val Purple = Color(0xFFB48AE5)
-val Blue = Color(0xFF8AA0E5)
 
 val cardColor = Color(0xFFFFF8F9)
 val SoftBlue = Color(0xFFD1D6FF)
 val LightPink = Color(0xFFFFF5FA)
 val LightOrange = Color(0xFFFFEEA3)
 val SoftGreen = Color(0xFFF1FDB0)
-val DarkGreen = Color(0xFFBADD7F)
-val FernGreen = Color(0xFF3E8440)
-val CuteOrange = Color(0xFFFCDD9D)
-val DarkOrange = Color(0xFFF1642E)
-
 
 val LightPastelPink = Color(0xFFFDC9EC)
 val PastelPink = Color(0xFFFDB5E5)
+val MediumPink = Color(0xFFF59AE9)
 val DarkerPastelPink = Color(0xFFFF8CD9)
 
 val LightPurple = Color(0xFFF6DDFF)
+val MediumPurple = Color(0xFFDD9AF5)
 val DarkerLightPurple = Color(0xFFA573CA)
 val DarkerPurple = Color(0xFFA573CA)
 
 
 val LightBlue = Color(0xFFB8CEFF)
 val DarkerSoftBlue = Color(0xFFB7CDFF)
-
-
-
-val cardGradientColor = Brush.linearGradient(
-    colors = listOf(
-        Pink,
-        PastelPink,
-        SoftGreen,
-        PastelPink,
-        Pink
-    ),
-    start = Offset(0f, 0f),
-    end = Offset(Float.POSITIVE_INFINITY, 0f),
-    tileMode = TileMode.Clamp
-)
+val MediumBlue = Color(0xFFA0F1EA)
 
 
 val categoryGradientColor = Brush.linearGradient(
     colors = listOf(
-        SoftGreen,
-        PastelPink,
-        Pink,
-        PastelPink, SoftGreen
+        MediumPurple,
+        MediumBlue,
     ),
     start = Offset(0f, 0f),
     end = Offset( Float.POSITIVE_INFINITY,0f),
     tileMode = TileMode.Clamp
 )
 
+val cardGradientColor = Brush.linearGradient(
+    colors = listOf(
+        MediumPurple,
+        MediumPink,
+        MediumBlue,
+        MediumPink,
+        MediumPurple
+    ),
+    start = Offset(0f, 0f),
+    end = Offset(0f,Float.POSITIVE_INFINITY),
+    tileMode = TileMode.Clamp
+)
+
+val wordCardGradientColor = Brush.linearGradient(
+    colors = listOf(
+        MediumPurple,
+        PastelPink,
+        MediumBlue,
+        PastelPink,
+        MediumPurple
+    ),
+    start = Offset(0f, 0f),
+    end = Offset(0f,Float.POSITIVE_INFINITY),
+    tileMode = TileMode.Clamp
+)
+
+val backCarGradientColor = Brush.linearGradient(
+    colors = listOf(
+        MediumPurple.copy(0.7f),
+        PastelPink.copy(0.7f),
+        MediumBlue.copy(0.7f),
+        PastelPink.copy(0.7f),
+        MediumPurple.copy(0.7f)
+    ),
+    start = Offset(0f, 0f),
+    end = Offset(0f,Float.POSITIVE_INFINITY),
+    tileMode = TileMode.Clamp
+)
 
 val bottomGradient = Brush.linearGradient(
     colors = listOf(
-        Pink,
+        MediumPurple,
         PastelPink,
-        SoftGreen,
         PastelPink,
-        Pink
+        MediumPurple
     ),
     start = Offset(0f, 0f),
     end = Offset( Float.POSITIVE_INFINITY,0f),
@@ -107,9 +116,10 @@ val drawerGradientColor = Brush.linearGradient(
 val addStoryCardColor = Brush.linearGradient(
     colors = listOf(
         LightPurple,
-        SoftPink,
+        PastelPink,
         LightYellow,
-        SoftBlue
+        PastelPink,
+        LightPurple
     ),
     start = Offset(0f, 0f),
     end = Offset(Float.POSITIVE_INFINITY, 0f),
@@ -118,9 +128,10 @@ val addStoryCardColor = Brush.linearGradient(
 
 val addStoryButtonColor = Brush.linearGradient(
     colors = listOf(
-        LightPurple,
-        SoftPink,
-        LightYellow,
+        MediumPurple,
+        PastelPink,
+        PastelPink,
+        MediumPurple
     ),
     start = Offset(0f, 0f),
     end = Offset(Float.POSITIVE_INFINITY, 0f),

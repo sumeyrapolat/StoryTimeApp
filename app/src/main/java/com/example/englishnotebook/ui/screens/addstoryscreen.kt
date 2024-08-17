@@ -28,20 +28,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.englishnotebook.ui.theme.Blue
-import com.example.englishnotebook.ui.theme.DarkGreen
-import com.example.englishnotebook.ui.theme.LightBlue
-import com.example.englishnotebook.ui.theme.LightOrange
-import com.example.englishnotebook.ui.theme.LightPurple
-import com.example.englishnotebook.ui.theme.LightYellow
-import com.example.englishnotebook.ui.theme.Orange
-import com.example.englishnotebook.ui.theme.PastelPink
-import com.example.englishnotebook.ui.theme.PastelYellow
-import com.example.englishnotebook.ui.theme.Pink
-import com.example.englishnotebook.ui.theme.Purple
-import com.example.englishnotebook.ui.theme.SoftBlue
-import com.example.englishnotebook.ui.theme.SoftGreen
-import com.example.englishnotebook.ui.theme.SoftPink
 import com.example.englishnotebook.ui.theme.addStoryButtonColor
 import com.example.englishnotebook.ui.theme.addStoryCardColor
 import com.example.englishnotebook.viewmodel.FeedViewModel
@@ -69,7 +55,6 @@ fun AddStoryScreen(navController: NavController, words: List<String>, viewModel:
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp),
-            border = BorderStroke(2.dp, addStoryCardColor),
             shape = RoundedCornerShape(25.dp),
         ) {
             Box(

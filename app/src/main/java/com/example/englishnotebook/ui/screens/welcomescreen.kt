@@ -23,12 +23,10 @@ import com.example.englishnotebook.R
 import com.example.englishnotebook.ui.theme.DarkerLightPurple
 import com.example.englishnotebook.ui.theme.LightBlue
 import com.example.englishnotebook.ui.theme.LightPurple
-import com.example.englishnotebook.ui.theme.LightYellow
-import com.example.englishnotebook.ui.theme.Pink
+import com.example.englishnotebook.ui.theme.MediumBlue
 import com.example.englishnotebook.ui.theme.PastelYellow
 import com.example.englishnotebook.ui.theme.PastelPink
-import com.example.englishnotebook.ui.theme.Orange
-import com.example.englishnotebook.ui.theme.Purple
+
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
@@ -44,7 +42,7 @@ fun WelcomeScreen(navController: NavController) {
             PastelPink,
             PastelYellow,
             PastelPink,
-            LightBlue
+            MediumBlue
         ),
         start = Offset(0f, 0f),
         end = Offset(0f, screenHeight),
@@ -53,7 +51,7 @@ fun WelcomeScreen(navController: NavController) {
 
     val radialOverlay = Brush.radialGradient(
         colors = listOf(
-            LightBlue.copy(alpha = 0.8f),
+            MediumBlue.copy(alpha = 0.6f),
             Color.Transparent
         ),
         center = Offset(screenWidth / 2, screenHeight / 2), // Ekranın tam ortası

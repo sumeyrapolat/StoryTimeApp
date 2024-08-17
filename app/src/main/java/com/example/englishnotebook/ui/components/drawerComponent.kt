@@ -38,8 +38,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import com.example.englishnotebook.R
-import com.example.englishnotebook.ui.theme.DarkOrange
-import com.example.englishnotebook.ui.theme.Pink
 import com.example.englishnotebook.viewmodel.AuthViewModel
 import java.io.InputStream
 
