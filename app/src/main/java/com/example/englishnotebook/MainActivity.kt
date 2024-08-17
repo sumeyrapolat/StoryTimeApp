@@ -69,6 +69,7 @@ fun MyApp(viewModel: AuthViewModel = hiltViewModel()) {
     val screenWidth = displayMetrics.widthPixels.toFloat()
 
 
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -79,7 +80,7 @@ fun MyApp(viewModel: AuthViewModel = hiltViewModel()) {
                         modifier = Modifier
                             .fillMaxHeight()
                             .width(300.dp)
-                            .background(drawerGradientColor, shape = RoundedCornerShape(topEnd = 26.dp, bottomEnd = 26.dp)),
+                            .background(drawerGradientColor, shape = RoundedCornerShape(topEnd = 25.dp, bottomEnd = 25.dp)),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {

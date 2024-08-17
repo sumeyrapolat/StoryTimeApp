@@ -33,7 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.englishnotebook.ui.theme.DarkerLightPurple
+import com.example.englishnotebook.ui.theme.DarkerPastelPink
+import com.example.englishnotebook.ui.theme.DarkerSoftBlue
 import com.example.englishnotebook.ui.theme.LightBlue
+import com.example.englishnotebook.ui.theme.LightPastelPink
 import com.example.englishnotebook.ui.theme.LightPurple
 import com.example.englishnotebook.ui.theme.PastelPink
 import com.example.englishnotebook.ui.theme.PastelYellow
@@ -91,7 +95,7 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp),
-                colors = CardDefaults.cardColors(containerColor = cardColor)
+                colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.5f))
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -102,8 +106,8 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
                     Text(
                         text = "Sign Up",
                         fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Pink,
+                        fontWeight = FontWeight.SemiBold,
+                        color = DarkerLightPurple
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -232,7 +236,9 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
                         modifier = Modifier.fillMaxWidth()
                             .background(
                                 Brush.linearGradient(
-                                    colors = listOf(LightPurple, Pink, LightPurple),
+                                    colors = listOf(  DarkerPastelPink,
+                                        DarkerSoftBlue,
+                                        DarkerPastelPink),
                                     start = Offset(0f, 0f),
                                     end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
                                 ),
@@ -247,7 +253,7 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
                         Text(
                             text = "Already have an account? Sign In",
                             fontSize = 16.sp,
-                            color = Pink
+                            color = DarkerLightPurple
                         )
                     }
                 }

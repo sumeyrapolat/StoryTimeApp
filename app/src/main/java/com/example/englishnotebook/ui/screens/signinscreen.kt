@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.englishnotebook.ui.theme.DarkerLightPurple
+import com.example.englishnotebook.ui.theme.DarkerPastelPink
+import com.example.englishnotebook.ui.theme.DarkerSoftBlue
 import com.example.englishnotebook.ui.theme.LightBlue
 import com.example.englishnotebook.ui.theme.LightPink
 import com.example.englishnotebook.ui.theme.LightPurple
@@ -95,15 +98,14 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
 
     val buttonBackgroundColor = Brush.linearGradient(
         colors = listOf(
-            LightPurple,
-            Pink,
-            LightPurple
+            DarkerPastelPink,
+            DarkerSoftBlue,
+            DarkerPastelPink
         ),
         start = Offset(0f, 0f),
         end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
     )
 
-    val cardBackgroundColor = cardColor
     val textColor = Color.White
 
     Box(
@@ -123,7 +125,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = cardBackgroundColor
+                    containerColor = (Color.White.copy(0.5f))
                 )
             ) {
 
@@ -136,8 +138,8 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                     Text(
                         text = "Sign In",
                         fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Pink,
+                        fontWeight = FontWeight.SemiBold,
+                        color = DarkerLightPurple,
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -210,7 +212,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                         Text(
                             text = "Don't have an account? Sign Up",
                             fontSize = 16.sp,
-                            color = Pink
+                            color = DarkerLightPurple
                         )
                     }
 
@@ -221,7 +223,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                         Text(
                             text = "Forgot Password",
                             fontSize = 16.sp,
-                            color = Pink
+                            color = DarkerLightPurple
                         )
                     }
                 }
@@ -234,7 +236,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                     title = {
                         Text(
                             "Reset Password",
-                            color = Pink, // Başlık rengi
+                            color = DarkerLightPurple, // Başlık rengi
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -261,7 +263,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                                 showResetPasswordDialog.value = false
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Pink ,
+                                containerColor = DarkerLightPurple ,
                                 contentColor = Color.White
                             )
                         ) {
@@ -274,11 +276,11 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                         ) {
                             Text(
                                 "Cancel",
-                                color = Pink // İptal butonunun metin rengi
+                                color = DarkerLightPurple // İptal butonunun metin rengi
                             )
                         }
                     },
-                    containerColor = LightPink,
+                    containerColor = Color.White.copy(0.9f),
                     shape = RoundedCornerShape(25.dp)
                 )
 

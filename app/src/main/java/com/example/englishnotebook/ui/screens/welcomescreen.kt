@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.englishnotebook.R
+import com.example.englishnotebook.ui.theme.DarkerLightPurple
 import com.example.englishnotebook.ui.theme.LightBlue
 import com.example.englishnotebook.ui.theme.LightPurple
 import com.example.englishnotebook.ui.theme.LightYellow
@@ -96,7 +97,7 @@ fun WelcomeScreen(navController: NavController) {
                     fontWeight = FontWeight.Medium,
                     color = Color.White,
                     fontFamily = fjallaOne,
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = 18.dp),
                     textAlign = TextAlign.Center
                 )
 
@@ -108,8 +109,8 @@ fun WelcomeScreen(navController: NavController) {
                     },
                     shape = RoundedCornerShape(25.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = LightYellow,
-                        contentColor = Pink
+                        containerColor = Color.White.copy(0.9f),
+                        contentColor = DarkerLightPurple
                     ),
                     modifier = Modifier
                         .width(200.dp)
@@ -120,7 +121,8 @@ fun WelcomeScreen(navController: NavController) {
                         text = "Get Started",
                         fontSize = 18.sp,
                         fontFamily = fjallaOne,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp)
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
             }
