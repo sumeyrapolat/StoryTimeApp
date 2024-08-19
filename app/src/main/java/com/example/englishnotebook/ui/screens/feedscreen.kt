@@ -33,6 +33,7 @@ import com.example.englishnotebook.ui.components.WordsCard
 import com.example.englishnotebook.viewmodel.AuthViewModel
 import com.example.englishnotebook.viewmodel.FeedViewModel
 import com.example.englishnotebook.model.Story
+import com.example.englishnotebook.ui.components.SearchBarComponent
 
 
 @Composable
@@ -44,6 +45,28 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
 
     var selectedCategory by remember { mutableStateOf("Stories") }
     val userLoggedIn by authViewModel.userLoggedInState.collectAsState()
+
+    var searchText = remember { mutableStateOf("") }
+    val filteredStories = remember(stories) { mutableStateOf(stories) } // Başlangıçta tüm hikayeler
+
+    // Arama işlevi
+    fun performSearch() {
+        val query = searchText.value.lowercase().trim()
+        filteredStories.value = if (query.isEmpty()) {
+            stories // Arama yapılmazsa tüm hikayeleri göster
+        } else {
+            stories.filter { story ->
+                story.usedWords.any { word ->
+                    word.lowercase().contains(query)
+                }
+            }
+        }
+    }
+
+    // `stories` her değiştiğinde arama fonksiyonunu tekrar çalıştır
+    LaunchedEffect(stories) {
+        performSearch()
+    }
 
     LaunchedEffect(userLoggedIn) {
         if (userLoggedIn) {
@@ -65,6 +88,18 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
                 .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            if (selectedCategory == "Stories") {
+                SearchBarComponent(
+                    searchText = searchText,
+                    onSearch = {
+                        performSearch() // Arama fonksiyonunu çağır
+                        Log.d("FeedScreen", "Searching for: ${searchText.value}")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp, horizontal = 5.dp)
+                )
+            }
             CategoryTabs(onCategorySelected = { category ->
                 selectedCategory = category
                 Log.d("FeedScreen", "Seçilen kategori: $category")
@@ -80,7 +115,7 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
                 is FeedViewModel.PostState.Success -> {
                     when (selectedCategory) {
                         "Stories" -> {
-                            if (stories.isEmpty()) {
+                            if (filteredStories.value.isEmpty()) {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center
@@ -95,7 +130,7 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
                                 LazyColumn(
                                     modifier = Modifier.fillMaxSize()
                                 ) {
-                                    items(stories) { story ->
+                                    items(filteredStories.value) { story ->
                                         StoryCard(
                                             userPhoto = story.userPhoto,
                                             userName = story.userName,
@@ -148,4 +183,3 @@ fun FeedScreen(navController: NavController, authViewModel: AuthViewModel = hilt
         }
     }
 }
-
